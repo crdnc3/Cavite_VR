@@ -50,7 +50,7 @@ const NavBar = ({ searchTerm, setSearchTerm }) => {
               <img src="/images/justlogo.png" alt="Brand Logo" className="logo-img" />
             </div>
           </div>
-            <span className="brand-text">CAVITE:VR</span>
+            <span className="brand-text">CATE:VR</span>
           </div>
 
           {/* Navigation Links */}
