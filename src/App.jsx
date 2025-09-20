@@ -58,6 +58,7 @@ const AppWrapper = () => {
     '/Users',
     '/Support',
     '/Archive',
+    '/navbar',
     '/Conman',
     '/content-manager',
   ];
@@ -87,6 +88,7 @@ const AppWrapper = () => {
           <Route path="/Support" element={<Support />} />
           <Route path="/Archive" element={<Archive />} />
           <Route path="/Conman" element={<Conman />} />
+          <Route path="/navBar" element={<NavBar />} />
           <Route path="/content-manager" element={<ContentManager />} />
           <Route
             path="/CaviteInfographic"
