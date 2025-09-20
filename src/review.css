@@ -1,0 +1,537 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lexend:wght@300;400;500;600;700&display=swap');
+
+/* Reset base layout with modern styling */
+body.review, html.review {
+  height: auto;
+  overflow: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  background: linear-gradient(135deg, #e3e0e0 0%, #f0eded 50%, #e8e5e5 100%);
+  background-attachment: fixed;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #333;
+  margin: 0;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom scrollbar for webkit browsers */
+body.review::-webkit-scrollbar,
+html.review::-webkit-scrollbar {
+  display: none;
+}
+
+/* Card container with glassmorphism */
+.review-card.two-column {
+  max-width: 1300px;
+  width: 100%;
+  margin: 40px auto;
+  display: flex;
+  gap: 40px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 24px;
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.1),
+    0 1px 3px rgba(0, 0, 0, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  padding: 48px;
+  align-items: flex-start;
+  min-height: 80vh;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle animated background pattern */
+.review-card.two-column::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(0, 56, 168, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(0, 56, 168, 0.02) 0%, transparent 50%),
+    radial-gradient(circle at 40% 80%, rgba(0, 56, 168, 0.02) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Left Column with enhanced styling */
+.review-left {
+  flex: 1;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding-right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 56, 168, 0.2) transparent;
+}
+
+.review-left::-webkit-scrollbar {
+  width: 6px;
+}
+
+.review-left::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, rgba(0, 56, 168, 0.2), rgba(0, 56, 168, 0.4));
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.review-left::-webkit-scrollbar-track {
+  background: rgba(0, 56, 168, 0.05);
+  border-radius: 10px;
+}
+
+/* Enhanced image container */
+.review-image-container {
+  width: 100%;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.15),
+    0 1px 8px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+  position: relative;
+  background: linear-gradient(45deg, #f8f9fa, #ffffff);
+}
+
+.review-image-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 56, 168, 0.1) 0%,
+    transparent 30%,
+    transparent 70%,
+    rgba(0, 56, 168, 0.05) 100%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.review-image-container:hover::before {
+  opacity: 1;
+}
+
+.review-image {
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+  display: block;
+  transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  border-radius: 18px;
+  filter: saturate(1.1) contrast(1.05);
+}
+
+.review-image-container:hover .review-image {
+  transform: scale(1.03);
+  filter: saturate(1.2) contrast(1.1) brightness(1.05);
+}
+
+/* Enhanced typography */
+.review-title {
+  font-family: 'Lexend', sans-serif;
+  font-size: 2.1rem;
+  font-weight: 600;
+  color: #0038a8;
+  margin: 0 0 12px 0;
+  line-height: 1.3;
+  letter-spacing: -0.025em;
+  background: linear-gradient(135deg, #0038a8 0%, #1e4ed8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+}
+
+.review-subtitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #6b7280;
+  margin: 0 0 20px 0;
+  letter-spacing: -0.01em;
+}
+
+.review-body {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: #374151;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+/* Right Column enhanced */
+.review-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  justify-content: flex-start;
+  padding-left: 24px;
+}
+
+/* Location header with modern styling */
+.review-right h3 {
+  font-family: 'Lexend', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #0038a8;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  position: relative;
+  letter-spacing: -0.02em;
+}
+
+.review-right h3::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #0038a8 0%, #3b82f6 100%);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.review-right h3:hover::after {
+  width: 120px;
+}
+
+/* Enhanced map styling */
+.review-map {
+  width: 100%;
+  height: 420px;
+  border-radius: 20px;
+  border: none;
+  box-shadow: 
+    0 15px 35px rgba(0, 0, 0, 0.12),
+    0 5px 15px rgba(0, 0, 0, 0.08);
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  overflow: hidden;
+  position: relative;
+}
+
+.review-map::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    45deg,
+    rgba(0, 56, 168, 0.05) 0%,
+    transparent 50%
+  );
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.review-map:hover {
+  transform: translateY(-4px);
+  box-shadow: 
+    0 25px 50px rgba(0, 0, 0, 0.15),
+    0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.review-map:hover::before {
+  opacity: 1;
+}
+
+/* Modern feedback button */
+.report-button {
+  padding: 16px 32px;
+  background: linear-gradient(135deg, #CE1126 0%, #dc2626 100%);
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 1.05rem;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  align-self: flex-start;
+  box-shadow: 
+    0 8px 25px rgba(206, 17, 38, 0.3),
+    0 3px 10px rgba(206, 17, 38, 0.2);
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.025em;
+}
+
+.report-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.report-button:hover::before {
+  left: 100%;
+}
+
+.report-button:hover,
+.report-button:focus {
+  background: linear-gradient(135deg, #b91c2c 0%, #c53030 100%);
+  box-shadow: 
+    0 12px 35px rgba(185, 28, 44, 0.4),
+    0 5px 15px rgba(185, 28, 44, 0.3);
+  transform: translateY(-3px);
+  outline: none;
+}
+
+.report-button:active {
+  transform: translateY(-1px);
+  box-shadow: 
+    0 8px 20px rgba(185, 28, 44, 0.5),
+    0 3px 8px rgba(185, 28, 44, 0.4);
+}
+
+/* Enhanced modal styling */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-container {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 32px 40px;
+  box-shadow: 
+    0 25px 50px rgba(0, 0, 0, 0.25),
+    0 10px 25px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 480px;
+  animation: slideUp 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: relative;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.report-textarea {
+  width: 100%;
+  resize: vertical;
+  font-size: 1rem;
+  padding: 16px;
+  border-radius: 12px;
+  border: 2px solid rgba(0, 56, 168, 0.1);
+  margin-top: 16px;
+  margin-bottom: 24px;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  box-sizing: border-box;
+}
+
+.report-textarea:focus {
+  outline: none;
+  border-color: rgba(0, 56, 168, 0.3);
+  box-shadow: 
+    0 0 0 4px rgba(0, 56, 168, 0.1),
+    0 4px 12px rgba(0, 56, 168, 0.15);
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+}
+
+.submit-report-button,
+.cancel-report-button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: relative;
+  overflow: hidden;
+}
+
+.submit-report-button {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(5, 150, 105, 0.3);
+}
+
+.submit-report-button:hover {
+  background: linear-gradient(135deg, #047857 0%, #059669 100%);
+  box-shadow: 0 6px 20px rgba(4, 120, 87, 0.4);
+  transform: translateY(-2px);
+}
+
+.cancel-report-button {
+  background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+}
+
+.cancel-report-button:hover {
+  background: linear-gradient(135deg, #b91c1c 0%, #dc2626 100%);
+  box-shadow: 0 6px 20px rgba(185, 28, 28, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Enhanced responsive design */
+@media (max-width: 900px) {
+  .review-card.two-column {
+    flex-direction: column;
+    padding: 32px 24px;
+    margin: 20px auto;
+    min-height: auto;
+    gap: 32px;
+  }
+
+  .review-left,
+  .review-right {
+    padding: 0;
+    max-height: none;
+    overflow-y: visible;
+  }
+
+  .review-image {
+    height: 260px;
+  }
+
+  .review-map {
+    height: 320px;
+  }
+
+  .review-title {
+    font-size: 1.8rem;
+  }
+
+  .review-subtitle {
+    font-size: 1.1rem;
+  }
+
+  .report-button {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+    padding: 18px 32px;
+  }
+
+  .modal-container {
+    margin: 20px;
+    padding: 24px 28px;
+  }
+}
+
+@media (max-width: 600px) {
+  .review-card.two-column {
+    padding: 24px 16px;
+    border-radius: 16px;
+  }
+
+  .review-title {
+    font-size: 1.6rem;
+  }
+
+  .review-subtitle {
+    font-size: 1rem;
+  }
+
+  .review-body {
+    font-size: 1rem;
+  }
+
+  .review-image {
+    height: 200px;
+  }
+
+  .review-map {
+    height: 280px;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .review-image,
+  .review-map,
+  .report-button,
+  .modal-container {
+    transition: none;
+  }
+  
+  .review-card.two-column::before,
+  .review-image-container::before,
+  .report-button::before {
+    display: none;
+  }
+}
+
+/* Focus styles for better accessibility */
+.review-map:focus,
+.report-button:focus {
+  outline: 3px solid rgba(59, 130, 246, 0.5);
+  outline-offset: 2px;
+}

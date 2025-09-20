@@ -1,0 +1,133 @@
+/* Sidebar.css */
+.sidebar {
+    width: 190px;
+    background-color: #0033cc;
+    color: #fff;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .sidebar .logo {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .sidebar .logo span {
+    color: #ffc107;
+  }
+  
+  .sidebar .menu {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+  }
+  
+  .sidebar .menu li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  
+  .sidebar .menu li:hover {
+    background-color: #002080;
+  }
+  
+  .icon {
+    font-size: 18px;
+  }
+
+  /* Logout Confirmation Modal Overlay */
+.confirm-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050;
+  backdrop-filter: blur(2px);
+}
+
+/* Logout Confirmation Modal */
+.confirm-modal {
+  background-color: #ffffff;
+  width: 90%;
+  max-width: 400px;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease-in-out;
+  text-align: center;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Modal Message Text */
+.confirm-modal p {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 24px;
+}
+
+/* Button Container */
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+/* Confirm Button */
+.confirm-modal .confirm {
+  padding: 10px 18px;
+  font-size: 15px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  background-color: #d9534f;
+  color: white;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.confirm-modal .confirm:hover {
+  background-color: #c9302c;
+  transform: translateY(-1px);
+}
+
+/* Cancel Button */
+.confirm-modal .cancel {
+  padding: 10px 18px;
+  font-size: 15px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  background-color: #ccc;
+  color: #333;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.confirm-modal .cancel:hover {
+  background-color: #b3b3b3;
+  transform: translateY(-1px);
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
