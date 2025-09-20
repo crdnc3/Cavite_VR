@@ -56,7 +56,7 @@ const LandingPage = () => {
                 <div className="mockup-images">
                     <img src={mckp1} alt="Mockup 1" className="mockup mockup-1" />
                     <img src={mckp2} alt="Mockup 2" className="mockup mockup-2" />
-                    <img src={cyllwyllw} alt="Big Circle" className="big-circle" />
+                    <img src={cyllw} alt="Big Circle" className="big-circle" />
                     <img src={cblu} alt="Right Circle" className="right-circle" />
                     <img src={cbluu} alt="Bottom Circle 2" className="bottom-circle" />
                     <img src={cred} alt="Bottom Right Circle" className="botryt-circle" />
