@@ -50,20 +50,24 @@ const AppWrapper = () => {
 
   if (loading) return <div>Loading...</div>;
 
+  // ✅ All lowercase para walang conflict
   const hideNavBarPaths = [
     '/',
     '/login',
     '/register',
-    '/Admin',
-    '/Users',
-    '/Support',
-    '/Archive',
+    '/admin',
+    '/users',
+    '/support',
+    '/archive',
     '/navbar',
-    '/Conman',
+    '/conman',
     '/content-manager',
   ];
 
-  const shouldShowNavBar = !hideNavBarPaths.includes(location.pathname);
+  // ✅ Always check lowercase para safe
+  const shouldShowNavBar = !hideNavBarPaths.includes(
+    location.pathname.toLowerCase()
+  );
 
   return (
     <>
@@ -83,20 +87,19 @@ const AppWrapper = () => {
           <Route path="/faq" element={<FAQ />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/review/:id" element={<Review />} />
-          <Route path="/Admin" element={<Admin />} />
-          <Route path="/Users" element={<Users />} />
-          <Route path="/Support" element={<Support />} />
-          <Route path="/Archive" element={<Archive />} />
-          <Route path="/Conman" element={<Conman />} />
-          <Route path="/navBar" element={<NavBar />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/users" element={<Users />} />
+          <Route path="/support" element={<Support />} />
+          <Route path="/archive" element={<Archive />} />
+          <Route path="/conman" element={<Conman />} />
           <Route path="/content-manager" element={<ContentManager />} />
           <Route
-            path="/CaviteInfographic"
+            path="/caviteinfographic"
             element={<CaviteInfographic searchTerm={searchTerm} />}
           />
         </Route>
 
-        {/* ✅ Catch-all route → kahit anong maling path balik sa LandingPage */}
+        {/* ✅ Catch-all route → balik LandingPage */}
         <Route path="*" element={<LandingPage />} />
       </Routes>
     </>
