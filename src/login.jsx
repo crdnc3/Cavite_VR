@@ -6,6 +6,8 @@ import { auth, db } from './firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import './login.css';
+import newestlogo from './assets/images/newestlogo.png';
+import newerbg from './assets/images/newerbg.png';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -96,8 +98,8 @@ const Login = () => {
 
   return (
     <div className="login-container">
-      <img src="src/assets/images/newerbg.png" alt="Vector" className="vector-image" />
-      <img src="src/assets/images/newestlogo.png" alt="Logo" className="logo-image" />
+      <img src={newerbg} alt="Vector" className="vector-image" />
+      <img src={newestlogo} alt="Logo" className="logo-image" />
 
       <div className="login-card">
         <h1 className="login-title">Welcome</h1>
