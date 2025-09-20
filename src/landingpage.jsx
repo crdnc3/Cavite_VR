@@ -12,7 +12,7 @@ import bonifacio from './assets/videos/bonifacio.mp4';
 
 
 const videoData = [
-    { src: {bonifacio}, title: 'Bonifacio Trial House' },
+    { src: bonifacio, title: 'Bonifacio Trial House' },
     { src: 'src/assets/videos/imus.mp4', title: 'Battle of Imus Monuments' },
     { src: 'src/assets/videos/alapan.mp4', title: 'Battle of Alapan Site' },
     { src: 'src/assets/videos/zapote.mp4', title: 'Zapote Battlefield' },
