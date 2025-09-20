@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { auth } from './firebase';
 import { signOut } from 'firebase/auth';
 import './navbar.css';
+import justlogo from './assets/images/justlogo.png';
 
 const NavBar = ({ searchTerm, setSearchTerm }) => {
   const navigate = useNavigate();
@@ -47,10 +48,10 @@ const NavBar = ({ searchTerm, setSearchTerm }) => {
           <div className="navbar-brand">
           <div className="navbar-brand">
             <div className="brand-icon">
-              <img src="src/assets/images/justlogo.png" alt="Brand Logo" className="logo-img" />
+              <img src={justlogo} alt="Brand Logo" className="logo-img" />
             </div>
           </div>
-            <span className="brand-text">CATE:VR</span>
+            <span className="brand-text">CAVITE:VR</span>
           </div>
 
           {/* Navigation Links */}
