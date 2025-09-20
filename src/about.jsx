@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import './about.css';
-import kapitolyo from './assets/images/kapitolyo.png';
+import kapitolyo from './assets/images/kapitolyo.jpg';
 
 const About = () => {
     useEffect(() => {
