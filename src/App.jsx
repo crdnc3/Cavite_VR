@@ -5,6 +5,7 @@ import {
   Routes,
   useLocation,
   Navigate,
+  Outlet,
 } from 'react-router-dom';
 import Login from './login';
 import Register from './register';
@@ -25,9 +26,12 @@ import ContentManager from './connman';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase';
 
-const ProtectedRoute = ({ children }) => {
-  const user = auth.currentUser;
-  return user ? children : <Navigate to="/" replace />;
+// ✅ Protected Route Layout
+const ProtectedRoute = ({ user }) => {
+  if (!user) {
+    return <Navigate to="/" replace />;
+  }
+  return <Outlet />;
 };
 
 const AppWrapper = () => {
@@ -66,106 +70,29 @@ const AppWrapper = () => {
         <NavBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
       )}
       <Routes>
+        {/* Public Routes */}
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        <Route
-          path="/home"
-          element={
-            <ProtectedRoute>
-              <Home searchTerm={searchTerm} />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/about"
-          element={
-            <ProtectedRoute>
-              <About />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/faq"
-          element={
-            <ProtectedRoute>
-              <FAQ />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute>
-              <Profile />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/review/:id"
-          element={
-            <ProtectedRoute>
-              <Review />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/Admin"
-          element={
-            <ProtectedRoute>
-              <Admin />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/Users"
-          element={
-            <ProtectedRoute>
-              <Users />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/Support"
-          element={
-            <ProtectedRoute>
-              <Support />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/Archive"
-          element={
-            <ProtectedRoute>
-              <Archive />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/Conman"
-          element={
-            <ProtectedRoute>
-              <Conman />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/content-manager"
-          element={
-            <ProtectedRoute>
-              <ContentManager />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/CaviteInfographic"
-          element={
-            <ProtectedRoute>
-              <CaviteInfographic searchTerm={searchTerm} />
-            </ProtectedRoute>
-          }
-        />
+        {/* ✅ Protected Routes */}
+        <Route element={<ProtectedRoute user={user} />}>
+          <Route path="/home" element={<Home searchTerm={searchTerm} />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/faq" element={<FAQ />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/review/:id" element={<Review />} />
+          <Route path="/Admin" element={<Admin />} />
+          <Route path="/Users" element={<Users />} />
+          <Route path="/Support" element={<Support />} />
+          <Route path="/Archive" element={<Archive />} />
+          <Route path="/Conman" element={<Conman />} />
+          <Route path="/content-manager" element={<ContentManager />} />
+          <Route
+            path="/CaviteInfographic"
+            element={<CaviteInfographic searchTerm={searchTerm} />}
+          />
+        </Route>
       </Routes>
     </>
   );
