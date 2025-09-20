@@ -93,6 +93,9 @@ const AppWrapper = () => {
             element={<CaviteInfographic searchTerm={searchTerm} />}
           />
         </Route>
+
+        {/* ✅ Catch-all route → kahit anong maling path balik sa LandingPage */}
+        <Route path="*" element={<LandingPage />} />
       </Routes>
     </>
   );
