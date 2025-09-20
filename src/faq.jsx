@@ -58,7 +58,7 @@ const FAQ = () => {
                     </div>
 
                     <div className="faq-image">
-                        <img src="/images/faq.png" alt="FAQ" />
+                        <img src="src/assets/images/faq.png" alt="FAQ" />
                     </div>
                 </div>
             </div>

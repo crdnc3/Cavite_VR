@@ -47,7 +47,7 @@ const NavBar = ({ searchTerm, setSearchTerm }) => {
           <div className="navbar-brand">
           <div className="navbar-brand">
             <div className="brand-icon">
-              <img src="/images/justlogo.png" alt="Brand Logo" className="logo-img" />
+              <img src="src/assets/images/justlogo.png" alt="Brand Logo" className="logo-img" />
             </div>
           </div>
             <span className="brand-text">CATE:VR</span>

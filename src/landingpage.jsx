@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import './landingpage.css';
 
 const videoData = [
-    { src: '/videos/bonifacio.mp4', title: 'Bonifacio Trial House' },
-    { src: '/videos/imus.mp4', title: 'Battle of Imus Monuments' },
-    { src: '/videos/alapan.mp4', title: 'Battle of Alapan Site' },
-    { src: '/videos/zapote.mp4', title: 'Zapote Battlefield' },
-    { src: '/videos/baldomero.mp4', title: 'Baldomero Aguinaldo Shrine' },
+    { src: 'src/assets/videos/bonifacio.mp4', title: 'Bonifacio Trial House' },
+    { src: 'src/assets/videos/imus.mp4', title: 'Battle of Imus Monuments' },
+    { src: 'src/assets/videos/alapan.mp4', title: 'Battle of Alapan Site' },
+    { src: 'src/assets/videos/zapote.mp4', title: 'Zapote Battlefield' },
+    { src: 'src/assets/videos/baldomero.mp4', title: 'Baldomero Aguinaldo Shrine' },
 ];
 
 const LandingPage = () => {
@@ -38,7 +38,7 @@ const LandingPage = () => {
                     </p>
                     <div className="hero-buttons">
                         <button className="google-play-button">
-                            <img src="/images/gplay.png" alt="Google Play" className="google-play-icon" />
+                            <img src="src/assets/images/gplay.png" alt="Google Play" className="google-play-icon" />
                             Get it on Google Play
                         </button>
                         <button className="lgn-btn" onClick={handleLoginClick}>
@@ -47,13 +47,13 @@ const LandingPage = () => {
                     </div>
                 </div>
                 <div className="mockup-images">
-                    <img src="/images/mckp1.png" alt="Mockup 1" className="mockup mockup-1" />
-                    <img src="/images/mckp2.png" alt="Mockup 2" className="mockup mockup-2" />
-                    <img src="/images/cyllw.png" alt="Big Circle" className="big-circle" />
-                    <img src="/images/cblu.png" alt="Right Circle" className="right-circle" />
-                    <img src="/images/cbluu.png" alt="Bottom Circle 2" className="bottom-circle" />
-                    <img src="/images/cred.png" alt="Bottom Right Circle" className="botryt-circle" />
-                    <img src="/images/cred.png" alt="Bottom Right Circle" className="botry-circle" />
+                    <img src="src/assets/images/mckp1.png" alt="Mockup 1" className="mockup mockup-1" />
+                    <img src="src/assets/images/mckp2.png" alt="Mockup 2" className="mockup mockup-2" />
+                    <img src="src/assets/images/cyllw.png" alt="Big Circle" className="big-circle" />
+                    <img src="src/assets/images/cblu.png" alt="Right Circle" className="right-circle" />
+                    <img src="src/assets/images/cbluu.png" alt="Bottom Circle 2" className="bottom-circle" />
+                    <img src="src/assets/images/cred.png" alt="Bottom Right Circle" className="botryt-circle" />
+                    <img src="src/assets/images/cred.png" alt="Bottom Right Circle" className="botry-circle" />
                 </div>
 
                 <div className="scroll-down-indicator">

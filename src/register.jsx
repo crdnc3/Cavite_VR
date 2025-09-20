@@ -172,8 +172,8 @@ const Register = () => {
 
   return (
     <div className="register-container">
-      <img src="/images/newerbg.png" alt="Vector" className="vector-image" />
-      <img src="/images/newestlogo.png" alt="Logo" className="logo-image" />
+      <img src="src/assets/images/newerbg.png" alt="Vector" className="vector-image" />
+      <img src="src/assets/images/newestlogo.png" alt="Logo" className="logo-image" />
 
       <div className="register-card">
         <h1 className="register-title">Welcome</h1>
