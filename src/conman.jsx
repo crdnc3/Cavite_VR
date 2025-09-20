@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Sidebar from './Sidebar';
-import './Conman.css';
+import './conman.css';
 import {
   collection,
   getDocs,
