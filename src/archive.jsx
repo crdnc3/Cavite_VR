@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Sidebar from './Sidebar';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from './firebase';
-import './Archive.css';
+import './archive.css';
 
 function Archive() {
   const [archivedReports, setArchivedReports] = useState([]);

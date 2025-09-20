@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { FaCommentDots } from 'react-icons/fa';
 import { auth, db } from './firebase';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
-import './Review.css';
+import './review.css';
 
 const Review = () => {
   const location = useLocation();
