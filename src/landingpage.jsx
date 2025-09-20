@@ -7,10 +7,12 @@ import cyllw from './assets/images/cyllw.png';
 import cblu from './assets/images/cblu.png';
 import cbluu from './assets/images/cbluu.png';
 import cred from './assets/images/cred.png';
+import gplay from './assets/images/gplay.png';
+import bonifacio from './assets/videos/bonifacio.mp4';
 
 
 const videoData = [
-    { src: 'src/assets/videos/bonifacio.mp4', title: 'Bonifacio Trial House' },
+    { src: {bonifacio}, title: 'Bonifacio Trial House' },
     { src: 'src/assets/videos/imus.mp4', title: 'Battle of Imus Monuments' },
     { src: 'src/assets/videos/alapan.mp4', title: 'Battle of Alapan Site' },
     { src: 'src/assets/videos/zapote.mp4', title: 'Zapote Battlefield' },
@@ -45,7 +47,7 @@ const LandingPage = () => {
                     </p>
                     <div className="hero-buttons">
                         <button className="google-play-button">
-                            <img src="src/assets/images/gplay.png" alt="Google Play" className="google-play-icon" />
+                            <img src={gplay} alt="Google Play" className="google-play-icon" />
                             Get it on Google Play
                         </button>
                         <button className="lgn-btn" onClick={handleLoginClick}>
