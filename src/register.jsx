@@ -6,6 +6,8 @@ import { db } from './firebase';
 import { doc, collection, addDoc, setDoc } from 'firebase/firestore';
 import { sendEmailVerification } from 'firebase/auth'; // ✅ Import ito
 import './register.css';
+import newestlogo from './assets/images/newestlogo.png';
+import newerbg from './assets/images/newerbg.png';
 
 const regions = [
   "Ilocos Region (Region I)",
@@ -172,8 +174,8 @@ const Register = () => {
 
   return (
     <div className="register-container">
-      <img src="src/assets/images/newerbg.png" alt="Vector" className="vector-image" />
-      <img src="src/assets/images/newestlogo.png" alt="Logo" className="logo-image" />
+      <img src={newerbg} alt="Vector" className="vector-image" />
+      <img src={newestlogo} alt="Logo" className="logo-image" />
 
       <div className="register-card">
         <h1 className="register-title">Welcome</h1>
