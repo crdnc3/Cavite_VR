@@ -2,7 +2,6 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from './firebase';
-import './Home.css';
 
 const Home = () => {
   const [cards, setCards] = useState([]);
