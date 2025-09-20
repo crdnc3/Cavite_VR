@@ -9,14 +9,18 @@ import cbluu from './assets/images/cbluu.png';
 import cred from './assets/images/cred.png';
 import gplay from './assets/images/gplay.png';
 import bonifacio from './assets/videos/bonifacio.mp4';
+import imus from './assets/videos/imus.mp4';
+import alapan from './assets/videos/alapan.mp4';
+import zapote from './assets/videos/zapote.mp4';
+import baldomero from './assets/videos/baldomero.mp4';
 
 
 const videoData = [
     { src: bonifacio, title: 'Bonifacio Trial House' },
-    { src: 'src/assets/videos/imus.mp4', title: 'Battle of Imus Monuments' },
-    { src: 'src/assets/videos/alapan.mp4', title: 'Battle of Alapan Site' },
-    { src: 'src/assets/videos/zapote.mp4', title: 'Zapote Battlefield' },
-    { src: 'src/assets/videos/baldomero.mp4', title: 'Baldomero Aguinaldo Shrine' },
+    { src: imus, title: 'Battle of Imus Monuments' },
+    { src: alapan, title: 'Battle of Alapan Site' },
+    { src: zapote, title: 'Zapote Battlefield' },
+    { src: baldomero, title: 'Baldomero Aguinaldo Shrine' },
 ];
 
 const LandingPage = () => {
