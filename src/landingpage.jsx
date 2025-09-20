@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './landingpage.css';
+import image1 from './assets/images/mckp1.png';
 
 const videoData = [
     { src: 'src/assets/videos/bonifacio.mp4', title: 'Bonifacio Trial House' },
@@ -47,8 +48,8 @@ const LandingPage = () => {
                     </div>
                 </div>
                 <div className="mockup-images">
-                    <img src="/assets/images/mckp1.png" alt="Mockup 1" className="mockup mockup-1" />
-                    <img src="assets/images/mckp2.png" alt="Mockup 2" className="mockup mockup-2" />
+                    <img src={image1} alt="Mockup 1" className="mockup mockup-1" />
+                    <img src="src/assets/images/mckp2.png" alt="Mockup 2" className="mockup mockup-2" />
                     <img src="src/assets/images/cyllw.png" alt="Big Circle" className="big-circle" />
                     <img src="src/assets/images/cblu.png" alt="Right Circle" className="right-circle" />
                     <img src="src/assets/images/cbluu.png" alt="Bottom Circle 2" className="bottom-circle" />
