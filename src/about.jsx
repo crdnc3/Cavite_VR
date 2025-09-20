@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import './about.css';
+import kapitolyo from './assets/images/kapitolyo.png';
 
 const About = () => {
     useEffect(() => {
@@ -18,7 +19,7 @@ const About = () => {
             <section className="hera-section">
                 <div className="hera-content">
                     <img
-                        src="src/assets/images/kapitolyo.jpg"
+                        src={kapitolyo}
                         alt="Cavite Historical Landmark"
                         className="hera-image"
                     />
