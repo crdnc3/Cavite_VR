@@ -96,8 +96,8 @@ const Login = () => {
 
   return (
     <div className="login-container">
-      <img src="/images/newerbg.png" alt="Vector" className="vector-image" />
-      <img src="/images/newestlogo.png" alt="Logo" className="logo-image" />
+      <img src="src/assets/images/newerbg.png" alt="Vector" className="vector-image" />
+      <img src="src/assets/images/newestlogo.png" alt="Logo" className="logo-image" />
 
       <div className="login-card">
         <h1 className="login-title">Welcome</h1>

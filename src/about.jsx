@@ -18,7 +18,7 @@ const About = () => {
             <section className="hera-section">
                 <div className="hera-content">
                     <img
-                        src="/images/kapitolyo.jpg"
+                        src="src/assets/images/kapitolyo.jpg"
                         alt="Cavite Historical Landmark"
                         className="hera-image"
                     />
