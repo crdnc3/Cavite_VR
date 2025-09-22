@@ -61,7 +61,7 @@ const NavBar = ({ searchTerm, setSearchTerm }) => {
               className="nav-item"
               data-color="yellow"
             >
-              <span className="nav-text">INFOGRAPHIC</span>
+              <span className="nav-text">HOME</span>
               <div className="nav-indicator"></div>
             </NavLink>
             <NavLink 
