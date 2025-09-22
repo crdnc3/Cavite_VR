@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { collection, getDocs, addDoc, serverTimestamp } from "firebase/firestore";
 import { db, auth } from "./firebase";
-import { onAuthStateChanged } from "firebase/auth";
 import {
   Church,
   MapPin,
@@ -32,32 +31,6 @@ const CaviteInfographic = ({ searchTerm }) => {
   // Feedback states
   const [showFeedbackBox, setShowFeedbackBox] = useState(false);
   const [feedbackText, setFeedbackText] = useState('');
-  const [submittingFeedback, setSubmittingFeedback] = useState(false);
-
-  // Auth state tracking
-  const [currentUser, setCurrentUser] = useState(null);
-  const [authLoaded, setAuthLoaded] = useState(false);
-
-  // Enhanced auth state listener
-  useEffect(() => {
-    console.log("Setting up auth listener...");
-    
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      console.log("Auth state changed:", {
-        email: user?.email,
-        uid: user?.uid,
-        timestamp: new Date().toISOString()
-      });
-      
-      setCurrentUser(user);
-      setAuthLoaded(true);
-    });
-
-    return () => {
-      console.log("Cleaning up auth listener");
-      unsubscribe();
-    };
-  }, []);
 
   const fetchData = useCallback(async () => {
     try {
@@ -105,6 +78,7 @@ const CaviteInfographic = ({ searchTerm }) => {
       ? treasures
       : landmarks;
 
+  // 🔍 Search filter
   const filteredItems = filteredByCategory.filter((item) =>
     item.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -145,40 +119,20 @@ const CaviteInfographic = ({ searchTerm }) => {
     setSelectedItem(item);
     setCurrentImageIndex(0);
     setLightboxOpen(false);
-    setShowFeedbackBox(false);
-    setFeedbackText('');
+    setShowFeedbackBox(false); // Reset feedback box when opening new modal
+    setFeedbackText(''); // Clear feedback text
   };
 
+  // Feedback functions
   const toggleFeedbackBox = () => {
     setShowFeedbackBox(!showFeedbackBox);
   };
 
   const handleSubmitFeedback = async () => {
-    if (submittingFeedback) return; // Prevent double submission
-    
     try {
-      setSubmittingFeedback(true);
-      
-      console.log("Starting feedback submission...");
-      console.log("Auth loaded:", authLoaded);
-      console.log("Current user from state:", currentUser?.email);
-      console.log("Auth.currentUser:", auth.currentUser?.email);
-
-      // Wait for auth to be loaded
-      if (!authLoaded) {
-        alert("Authentication is still loading. Please wait a moment and try again.");
-        return;
-      }
-
-      // Double check both state and auth object
-      const stateUser = currentUser;
-      const authUser = auth.currentUser;
-      
-      console.log("State user:", stateUser?.email);
-      console.log("Auth user:", authUser?.email);
-
-      if (!stateUser || !authUser) {
-        alert("You must be logged in to submit feedback. Please log in again.");
+      const user = auth.currentUser;
+      if (!user) {
+        alert("You must be logged in to submit feedback.");
         return;
       }
 
@@ -187,45 +141,20 @@ const CaviteInfographic = ({ searchTerm }) => {
         return;
       }
 
-      // Use auth.currentUser as the definitive source
-      const finalUser = auth.currentUser;
-      
-      console.log("Final user for submission:", {
-        email: finalUser.email,
-        uid: finalUser.uid
+      await addDoc(collection(db, "reports"), {
+        userId: user.uid,
+        email: user.email,
+        locationTitle: selectedItem.name,
+        reportText: feedbackText,
+        submittedAt: serverTimestamp()
       });
 
-      // Create the feedback document
-      const feedbackData = {
-        userId: finalUser.uid,
-        email: finalUser.email,
-        locationTitle: selectedItem.name,
-        reportText: feedbackText.trim(),
-        submittedAt: serverTimestamp(),
-        // Add additional debug info
-        submissionTimestamp: new Date().toISOString(),
-        userAgent: navigator.userAgent
-      };
-
-      console.log("Submitting feedback data:", feedbackData);
-
-      const docRef = await addDoc(collection(db, "reports"), feedbackData);
-      
-      console.log("Feedback submitted successfully with ID:", docRef.id);
-
-      alert('Thank you. Your feedback has been submitted successfully.');
+      alert('Thank you. Your feedback has been submitted.');
       setFeedbackText('');
       setShowFeedbackBox(false);
-
     } catch (error) {
       console.error("Error submitting feedback:", error);
-      console.error("Error details:", {
-        code: error.code,
-        message: error.message
-      });
-      alert("An error occurred while submitting your feedback. Please try again.");
-    } finally {
-      setSubmittingFeedback(false);
+      alert("An error occurred. Please try again.");
     }
   };
 
@@ -255,24 +184,6 @@ const CaviteInfographic = ({ searchTerm }) => {
 
   return (
     <div className="cavite-infographic">
-      {/* Debug Panel - REMOVE IN PRODUCTION */}
-      <div style={{
-        position: 'fixed',
-        top: '10px',
-        right: '10px',
-        background: 'rgba(0,0,0,0.8)',
-        color: 'white',
-        padding: '10px',
-        borderRadius: '5px',
-        fontSize: '12px',
-        zIndex: 9999
-      }}>
-        <div>Auth Loaded: {authLoaded ? '✅' : '❌'}</div>
-        <div>State User: {currentUser?.email || 'None'}</div>
-        <div>Auth User: {auth.currentUser?.email || 'None'}</div>
-        <div>Match: {currentUser?.email === auth.currentUser?.email ? '✅' : '❌'}</div>
-      </div>
-
       {/* Header */}
       <div className="cavite-header">
         <div className="cavite-header-container">
@@ -497,30 +408,18 @@ const CaviteInfographic = ({ searchTerm }) => {
             <div className="cavite-feedback-modal-overlay" onClick={(e) => e.stopPropagation()}>
               <div className="cavite-feedback-modal-container">
                 <h4>Leave Feedback for {selectedItem.name}</h4>
-                <p style={{fontSize: '12px', color: '#666', marginBottom: '10px'}}>
-                  Submitting as: {auth.currentUser?.email || 'Not logged in'}
-                </p>
                 <textarea
                   placeholder="Share your thoughts about this historical site..."
                   rows="4"
                   className="cavite-feedback-textarea"
                   value={feedbackText}
                   onChange={(e) => setFeedbackText(e.target.value)}
-                  disabled={submittingFeedback}
                 />
                 <div className="cavite-feedback-modal-buttons">
-                  <button 
-                    className="cavite-submit-feedback-button" 
-                    onClick={handleSubmitFeedback}
-                    disabled={submittingFeedback || !auth.currentUser}
-                  >
-                    {submittingFeedback ? 'Submitting...' : 'Submit Feedback'}
+                  <button className="cavite-submit-feedback-button" onClick={handleSubmitFeedback}>
+                    Submit Feedback
                   </button>
-                  <button 
-                    className="cavite-cancel-feedback-button" 
-                    onClick={toggleFeedbackBox}
-                    disabled={submittingFeedback}
-                  >
+                  <button className="cavite-cancel-feedback-button" onClick={toggleFeedbackBox}>
                     Cancel
                   </button>
                 </div>
