@@ -9,6 +9,8 @@ function Archive() {
   const [filteredReports, setFilteredReports] = useState([]);
   const [timeFilter, setTimeFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [customStartDate, setCustomStartDate] = useState('');
+  const [customEndDate, setCustomEndDate] = useState('');
 
   useEffect(() => {
     const fetchArchivedReports = async () => {
@@ -16,7 +18,11 @@ function Archive() {
         const querySnapshot = await getDocs(collection(db, 'archive'));
         const data = querySnapshot.docs.map((doc) => {
           const d = doc.data();
-          const createdAt = d.createdAt?.toDate?.() || d.submittedAt?.toDate?.() || new Date();
+          const createdAt =
+            d.createdAt?.toDate?.() ||
+            d.submittedAt?.toDate?.() ||
+            new Date();
+
           return {
             id: doc.id,
             email: d.email || 'No email',
@@ -34,45 +40,82 @@ function Archive() {
     fetchArchivedReports();
   }, []);
 
-  useEffect(() => {
+  // Helper: get predefined date range
+  const getDateRange = (filter) => {
     const now = new Date();
-    const filtered = archivedReports.filter((report) => {
-      if (!report.createdAt) return false;
+    let start, end;
 
-      const time = report.createdAt.getTime();
-      const oneWeek = 7 * 24 * 60 * 60 * 1000;
-      const oneMonth = 30 * 24 * 60 * 60 * 1000;
-      const oneYear = 365 * 24 * 60 * 60 * 1000;
+    switch (filter) {
+      case 'this-week':
+        start = new Date(now);
+        start.setDate(now.getDate() - now.getDay());
+        start.setHours(0, 0, 0, 0);
+        end = new Date(now);
+        return { start, end };
 
-      switch (timeFilter) {
-        case 'this-week':
-          const startOfWeek = new Date(now);
-          startOfWeek.setDate(now.getDate() - now.getDay());
-          return report.createdAt >= startOfWeek;
-        case 'last-week':
-          const lastWeekStart = new Date(now);
-          lastWeekStart.setDate(now.getDate() - now.getDay() - 7);
-          const lastWeekEnd = new Date(lastWeekStart);
-          lastWeekEnd.setDate(lastWeekEnd.getDate() + 6);
-          return report.createdAt >= lastWeekStart && report.createdAt <= lastWeekEnd;
-        case 'last-month':
-          return now - time <= oneMonth;
-        case 'last-year':
-          return now - time <= oneYear;
-        default:
-          return true;
+      case 'last-week':
+        start = new Date(now);
+        start.setDate(now.getDate() - now.getDay() - 7);
+        start.setHours(0, 0, 0, 0);
+        end = new Date(start);
+        end.setDate(start.getDate() + 6);
+        end.setHours(23, 59, 59, 999);
+        return { start, end };
+
+      case 'last-month':
+        start = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        end = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59, 999);
+        return { start, end };
+
+      case 'last-year':
+        start = new Date(now.getFullYear() - 1, 0, 1);
+        end = new Date(now.getFullYear() - 1, 11, 31, 23, 59, 59, 999);
+        return { start, end };
+
+      default:
+        return null;
+    }
+  };
+
+  useEffect(() => {
+    let filtered = archivedReports;
+
+    // Time filter
+    if (timeFilter !== 'all' && timeFilter !== 'custom') {
+      const range = getDateRange(timeFilter);
+      if (range) {
+        filtered = filtered.filter(
+          (report) =>
+            report.createdAt >= range.start && report.createdAt <= range.end
+        );
       }
-    }).filter((report) =>
-      report.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      report.locationTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      report.reportText.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    }
 
-    // Sort descending by date
+    // Custom range filter
+    if (timeFilter === 'custom' && customStartDate && customEndDate) {
+      const start = new Date(customStartDate);
+      const end = new Date(customEndDate);
+      end.setHours(23, 59, 59, 999); // isama buong araw ng end date
+      filtered = filtered.filter(
+        (report) => report.createdAt >= start && report.createdAt <= end
+      );
+    }
+
+    // Search filter
+    if (searchTerm.trim() !== '') {
+      filtered = filtered.filter(
+        (report) =>
+          report.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          report.locationTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          report.reportText.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    // Sort by newest first
     filtered.sort((a, b) => b.createdAt - a.createdAt);
 
     setFilteredReports(filtered);
-  }, [archivedReports, timeFilter, searchTerm]);
+  }, [archivedReports, timeFilter, customStartDate, customEndDate, searchTerm]);
 
   return (
     <div className="archive-page">
@@ -82,13 +125,34 @@ function Archive() {
 
         {/* Filter and Search */}
         <div className="filter-bar">
-          <select value={timeFilter} onChange={(e) => setTimeFilter(e.target.value)}>
+          <select
+            value={timeFilter}
+            onChange={(e) => setTimeFilter(e.target.value)}
+          >
             <option value="all">All Time</option>
             <option value="this-week">This Week</option>
             <option value="last-week">Last Week</option>
             <option value="last-month">Last Month</option>
             <option value="last-year">Last Year</option>
+            <option value="custom">Custom Range</option>
           </select>
+
+          {/* Custom date pickers */}
+          {timeFilter === 'custom' && (
+            <div className="custom-date-range">
+              <input
+                type="date"
+                value={customStartDate}
+                onChange={(e) => setCustomStartDate(e.target.value)}
+              />
+              <span>to</span>
+              <input
+                type="date"
+                value={customEndDate}
+                onChange={(e) => setCustomEndDate(e.target.value)}
+              />
+            </div>
+          )}
 
           <input
             type="text"

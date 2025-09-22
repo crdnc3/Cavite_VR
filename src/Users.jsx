@@ -15,7 +15,6 @@ function Users() {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  // ENHANCED: Added new states without removing existing ones
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedUsers, setSelectedUsers] = useState(new Set());
@@ -27,35 +26,36 @@ function Users() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        setLoading(true); // ENHANCED: Added loading state
+        setLoading(true);
         const usersSnapshot = await getDocs(collection(db, 'users'));
-        const userList = usersSnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
+        const userList = usersSnapshot.docs.map(doc => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            role: data.role || 'User', // ✅ ensure default role
+            ...data,
+          };
+        });
         setUsers(userList);
-        setError(null); // ENHANCED: Clear any previous errors
+        setError(null);
       } catch (error) {
         console.error('Error fetching users:', error);
-        setError('Failed to fetch users. Please try again.'); // ENHANCED: User-friendly error
+        setError('Failed to fetch users. Please try again.');
       } finally {
-        setLoading(false); // ENHANCED: Always stop loading
+        setLoading(false);
       }
     };
 
     fetchUsers();
   }, []);
 
-  // ENHANCED: Improved delete with confirmation modal
   const handleDeleteUser = async (userId) => {
     setUserToDelete(userId);
     setShowDeleteModal(true);
   };
 
-  // ENHANCED: Added confirmation function
   const confirmDelete = async () => {
     if (!userToDelete) return;
-    
     try {
       await deleteDoc(doc(db, "users", userToDelete));
       setUsers(prevUsers => prevUsers.filter(user => user.id !== userToDelete));
@@ -76,15 +76,13 @@ function Users() {
 
   const handleEditClick = (userId, currentRole) => {
     setEditingUserId(userId);
-    setNewRole(currentRole || 'User'); // default to 'User' if missing
+    setNewRole(currentRole || 'User');
   };
 
   const handleSaveRole = async (userId) => {
     try {
       const userRef = doc(db, 'users', userId);
-      await updateDoc(userRef, {
-        role: newRole,
-      });
+      await updateDoc(userRef, { role: newRole });
 
       setUsers(prevUsers =>
         prevUsers.map(user =>
@@ -96,11 +94,10 @@ function Users() {
       console.log(`User ${userId} updated.`);
     } catch (error) {
       console.error('Error updating user:', error);
-      setError('Failed to update user role. Please try again.'); // ENHANCED: Better error handling
+      setError('Failed to update user role. Please try again.');
     }
   };
 
-  // ENHANCED: Added bulk selection functions
   const handleSelectUser = (userId) => {
     setSelectedUsers(prev => {
       const newSet = new Set(prev);
@@ -121,39 +118,33 @@ function Users() {
     }
   };
 
-  // ENHANCED: Added bulk actions
   const handleBulkAction = async () => {
     if (!bulkAction || selectedUsers.size === 0) return;
-    
     try {
       if (bulkAction === 'delete') {
         const confirmBulkDelete = window.confirm(`Are you sure you want to delete ${selectedUsers.size} users?`);
         if (!confirmBulkDelete) return;
-        
-        const deletePromises = Array.from(selectedUsers).map(userId => 
+        const deletePromises = Array.from(selectedUsers).map(userId =>
           deleteDoc(doc(db, "users", userId))
         );
         await Promise.all(deletePromises);
-        
         setUsers(prevUsers => prevUsers.filter(user => !selectedUsers.has(user.id)));
         setSelectedUsers(new Set());
       } else if (bulkAction === 'promote') {
-        const updatePromises = Array.from(selectedUsers).map(userId => 
+        const updatePromises = Array.from(selectedUsers).map(userId =>
           updateDoc(doc(db, 'users', userId), { role: 'Admin' })
         );
         await Promise.all(updatePromises);
-        
-        setUsers(prevUsers => prevUsers.map(user => 
+        setUsers(prevUsers => prevUsers.map(user =>
           selectedUsers.has(user.id) ? { ...user, role: 'Admin' } : user
         ));
         setSelectedUsers(new Set());
       } else if (bulkAction === 'demote') {
-        const updatePromises = Array.from(selectedUsers).map(userId => 
+        const updatePromises = Array.from(selectedUsers).map(userId =>
           updateDoc(doc(db, 'users', userId), { role: 'User' })
         );
         await Promise.all(updatePromises);
-        
-        setUsers(prevUsers => prevUsers.map(user => 
+        setUsers(prevUsers => prevUsers.map(user =>
           selectedUsers.has(user.id) ? { ...user, role: 'User' } : user
         ));
         setSelectedUsers(new Set());
@@ -167,20 +158,21 @@ function Users() {
 
   const filteredUsers = useMemo(() => {
     const lowerSearch = searchTerm.toLowerCase();
-    return users.filter(user =>
-      (user.username?.toLowerCase().includes(lowerSearch) ||
-        user.email?.toLowerCase().includes(lowerSearch)) &&
-      (filterRole === '' || user.role === filterRole)
-    );
+    return users.filter(user => {
+      const role = user.role?.toLowerCase() || 'user';
+      return (
+        (user.username?.toLowerCase().includes(lowerSearch) ||
+          user.email?.toLowerCase().includes(lowerSearch)) &&
+        (filterRole === '' || role === filterRole.toLowerCase())
+      );
+    });
   }, [users, searchTerm, filterRole]);
 
   const sortedUsers = useMemo(() => {
     if (!sortConfig.key) return filteredUsers;
-
     return [...filteredUsers].sort((a, b) => {
       let aVal = a[sortConfig.key];
       let bVal = b[sortConfig.key];
-
       if (sortConfig.key === 'createdAt') {
         aVal = aVal?.toDate?.() || new Date(aVal);
         bVal = bVal?.toDate?.() || new Date(bVal);
@@ -188,7 +180,6 @@ function Users() {
         aVal = aVal?.toString().toLowerCase() || '';
         bVal = bVal?.toString().toLowerCase() || '';
       }
-
       if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
       if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
       return 0;
@@ -219,7 +210,6 @@ function Users() {
     return null;
   };
 
-  // ENHANCED: Show loading state
   if (loading) {
     return (
       <div className="dashboard-page user-page">
@@ -240,7 +230,6 @@ function Users() {
       <div className="main-content">
         <div className="page-header">
           <h2 className="page-title">User Management</h2>
-          {/* ENHANCED: Added user count and refresh */}
           <div className="page-stats">
             <span className="user-count">Total: {users.length} users</span>
             <button 
@@ -253,7 +242,6 @@ function Users() {
           </div>
         </div>
 
-        {/* ENHANCED: Error display */}
         {error && (
           <div className="error-banner">
             <span>⚠️ {error}</span>
@@ -261,7 +249,6 @@ function Users() {
           </div>
         )}
 
-        {/* ENHANCED: Bulk actions bar */}
         {selectedUsers.size > 0 && (
           <div className="bulk-actions-bar">
             <span className="selected-count">{selectedUsers.size} user(s) selected</span>
@@ -315,7 +302,6 @@ function Users() {
             Filters {showFilters ? '▲' : '▼'}
           </button>
           
-          {/* ENHANCED: Collapsible filters */}
           <div className={`filters-section ${showFilters ? 'expanded' : ''}`}>
             <select
               className="filter-select"
@@ -349,7 +335,6 @@ function Users() {
           <table className="user-table">
             <thead>
               <tr>
-                {/* ENHANCED: Added select all checkbox */}
                 <th className="select-column">
                   <input
                     type="checkbox"
@@ -387,13 +372,11 @@ function Users() {
                   const joinedDate = user.createdAt
                     ? new Date(user.createdAt?.toDate?.() || user.createdAt).toLocaleDateString()
                     : 'N/A';
-
                   return (
                     <tr 
                       key={user.id || index}
                       className={selectedUsers.has(user.id) ? 'selected-row' : ''}
                     >
-                      {/* ENHANCED: Individual select checkbox */}
                       <td>
                         <input
                           type="checkbox"
@@ -426,7 +409,7 @@ function Users() {
                           </select>
                         ) : (
                           <span className={`role-badge ${user.role?.toLowerCase() || 'user'}`}>
-                            {user.role === 'Admin' ? '' : ''} {user.role || 'User'}
+                            {user.role || 'User'}
                           </span>
                         )}
                       </td>
@@ -534,23 +517,19 @@ function Users() {
           </div>
         </div>
 
-        {/* ENHANCED: Delete confirmation modal */}
         {showDeleteModal && (
           <div className="modal-overlay">
             <div className="modal-content">
               <h3>Confirm Delete</h3>
               <p>Are you sure you want to delete this user? This action cannot be undone.</p>
               <div className="modal-actions">
-                <button onClick={confirmDelete} className="confirm-delete-btn">
-                  Yes, Delete
-                </button>
-                <button onClick={() => setShowDeleteModal(false)} className="cancel-modal-btn">
-                  Cancel
-                </button>
+                <button onClick={confirmDelete} className="confirm-btn">Yes, Delete</button>
+                <button onClick={() => setShowDeleteModal(false)} className="cancel-btn">Cancel</button>
               </div>
             </div>
           </div>
         )}
+
       </div>
     </div>
   );

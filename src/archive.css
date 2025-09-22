@@ -19,6 +19,27 @@
     align-items: center;
 }
 
+/* Custom date range wrapper */
+.custom-date-range {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .custom-date-range input[type="date"] {
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    background: #fff;
+    color: #333;
+  }
+  
+  .custom-date-range span {
+    font-size: 14px;
+    color: #555;
+  }
+
 /* Main Content */
 .archive-content {
     flex: 1;
