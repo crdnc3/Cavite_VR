@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { loginUser } from './firebaseAuth';
 import { auth, db } from './firebase';
 import { doc, getDoc } from 'firebase/firestore';
-import { sendPasswordResetEmail, signOut } from 'firebase/auth';
+import { sendPasswordResetEmail } from 'firebase/auth';
 import './login.css';
 import newestlogo from './assets/images/newestlogo.png';
 import newerbg from './assets/images/newerbg.png';
@@ -17,38 +17,13 @@ const Login = () => {
   const [passwordError, setPasswordError] = useState('');
   const [loading, setLoading] = useState(false);
   const [resetMessage, setResetMessage] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // 👈 toggle state
 
   // modal states
   const [showPrivacy, setShowPrivacy] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
 
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-
-  const clearAllAuthData = async () => {
-    try {
-      // Sign out completely
-      await signOut(auth);
-      
-      // Clear all localStorage
-      localStorage.clear();
-      
-      // Clear sessionStorage too
-      sessionStorage.clear();
-      
-      // Clear any cookies (if you're using any)
-      document.cookie.split(";").forEach((c) => {
-        const eqPos = c.indexOf("=");
-        const name = eqPos > -1 ? c.substr(0, eqPos) : c;
-        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
-      });
-      
-      console.log("All auth data cleared");
-    } catch (error) {
-      console.log("Error clearing auth data:", error);
-      // Continue anyway
-    }
-  };
 
   const handleLogin = async () => {
     let valid = true;
@@ -73,18 +48,7 @@ const Login = () => {
     if (valid) {
       setLoading(true);
       try {
-        console.log("Starting login process for:", email);
-        
-        // Step 1: Clear any existing auth state completely
-        await clearAllAuthData();
-        
-        // Step 2: Wait a bit to ensure clean state
-        await new Promise(resolve => setTimeout(resolve, 200));
-        
-        // Step 3: Attempt login
-        console.log("Attempting login...");
         const user = await loginUser(email, password);
-        console.log("Login successful for user:", user.email, "UID:", user.uid);
 
         if (!user.emailVerified) {
           setPasswordError('Please verify your email before logging in.');
@@ -92,40 +56,22 @@ const Login = () => {
           return;
         }
 
-        // Step 4: Fetch user data
         const userDocRef = doc(db, 'users', user.uid);
         const userDoc = await getDoc(userDocRef);
 
         if (userDoc.exists()) {
           const userData = userDoc.data();
-          console.log("User data fetched:", { email: userData.email, role: userData.role });
-          
-          // Step 5: Store fresh user data
-          localStorage.setItem('userData', JSON.stringify({
-            ...userData,
-            loginTimestamp: new Date().toISOString()
-          }));
+          localStorage.setItem('userData', JSON.stringify(userData));
 
-          console.log("Auth state should now be:", {
-            email: user.email,
-            uid: user.uid,
-            role: userData.role
-          });
-
-          // Step 6: Navigate based on role
           if (userData.role === 'Admin') {
-            console.log("Navigating to Admin dashboard");
             navigate('/Admin');
           } else {
-            console.log("Navigating to CaviteInfographic");
             navigate('/CaviteInfographic');
           }
         } else {
-          console.error("User document not found");
           setPasswordError('Account setup is incomplete.');
         }
       } catch (error) {
-        console.error("Login error:", error);
         setPasswordError('Invalid email or password');
       } finally {
         setLoading(false);
@@ -158,11 +104,6 @@ const Login = () => {
       <div className="login-card">
         <h1 className="login-title">Welcome</h1>
         <p className="login-bio">Sign in to your account</p>
-
-        {/* Debug info - REMOVE IN PRODUCTION */}
-        <div style={{fontSize: '10px', color: '#666', marginBottom: '10px'}}>
-          Current auth: {auth.currentUser?.email || 'None'}
-        </div>
 
         {/* Email input */}
         <div className="input-container">
@@ -197,6 +138,7 @@ const Login = () => {
           />
           <label className="floating-label">Password</label>
 
+          {/* 👇 toggle button inside input */}
           <button
             type="button"
             className="toggle-password"
@@ -303,7 +245,7 @@ const Login = () => {
                 <b>Information We Collect:</b> We only collect your <b>email</b>, <b>region</b>,
                 and <b>city</b>. This information is important for our data analytics, allowing us
                 to understand how many people from different regions and cities are interested
-                in Cavite's historical sites. The data helps us improve content and prioritize
+                in Cavite’s historical sites. The data helps us improve content and prioritize
                 features based on user interest.
               </li>
               <li>
