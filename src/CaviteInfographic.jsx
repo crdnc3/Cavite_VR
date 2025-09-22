@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "./firebase";
+import { collection, getDocs, addDoc, serverTimestamp } from "firebase/firestore";
+import { db, auth } from "./firebase";
 import {
   Church,
   MapPin,
@@ -14,6 +14,7 @@ import {
   Landmark,
   ChevronLeft,
   ChevronRight,
+  MessageCircle,
 } from "lucide-react";
 import "./CaviteInfographic.css";
 
@@ -26,6 +27,10 @@ const CaviteInfographic = ({ searchTerm }) => {
   const [error, setError] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  
+  // Feedback states
+  const [showFeedbackBox, setShowFeedbackBox] = useState(false);
+  const [feedbackText, setFeedbackText] = useState('');
 
   const fetchData = useCallback(async () => {
     try {
@@ -114,6 +119,43 @@ const CaviteInfographic = ({ searchTerm }) => {
     setSelectedItem(item);
     setCurrentImageIndex(0);
     setLightboxOpen(false);
+    setShowFeedbackBox(false); // Reset feedback box when opening new modal
+    setFeedbackText(''); // Clear feedback text
+  };
+
+  // Feedback functions
+  const toggleFeedbackBox = () => {
+    setShowFeedbackBox(!showFeedbackBox);
+  };
+
+  const handleSubmitFeedback = async () => {
+    try {
+      const user = auth.currentUser;
+      if (!user) {
+        alert("You must be logged in to submit feedback.");
+        return;
+      }
+
+      if (!feedbackText.trim()) {
+        alert("Please enter your feedback before submitting.");
+        return;
+      }
+
+      await addDoc(collection(db, "reports"), {
+        userId: user.uid,
+        email: user.email,
+        locationTitle: selectedItem.name,
+        reportText: feedbackText,
+        submittedAt: serverTimestamp()
+      });
+
+      alert('Thank you. Your feedback has been submitted.');
+      setFeedbackText('');
+      setShowFeedbackBox(false);
+    } catch (error) {
+      console.error("Error submitting feedback:", error);
+      alert("An error occurred. Please try again.");
+    }
   };
 
   if (loading) {
@@ -351,8 +393,39 @@ const CaviteInfographic = ({ searchTerm }) => {
                 </div>
               )}
 
+              {/* Feedback Button */}
+              <div className="cavite-modal-feedback-section">
+                <button className="cavite-feedback-button" onClick={toggleFeedbackBox}>
+                  <MessageCircle className="w-5 h-5" />
+                  Leave Feedback
+                </button>
+              </div>
             </div>
           </div>
+
+          {/* Feedback Modal */}
+          {showFeedbackBox && (
+            <div className="cavite-feedback-modal-overlay" onClick={(e) => e.stopPropagation()}>
+              <div className="cavite-feedback-modal-container">
+                <h4>Leave Feedback for {selectedItem.name}</h4>
+                <textarea
+                  placeholder="Share your thoughts about this historical site..."
+                  rows="4"
+                  className="cavite-feedback-textarea"
+                  value={feedbackText}
+                  onChange={(e) => setFeedbackText(e.target.value)}
+                />
+                <div className="cavite-feedback-modal-buttons">
+                  <button className="cavite-submit-feedback-button" onClick={handleSubmitFeedback}>
+                    Submit Feedback
+                  </button>
+                  <button className="cavite-cancel-feedback-button" onClick={toggleFeedbackBox}>
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

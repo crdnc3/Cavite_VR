@@ -95,6 +95,32 @@ function Admin() {
     }
   };
 
+const resolveReport = async (report) => {
+  try {
+    setResolvingReportId(report.id);
+
+    // 1. Save to archive
+    await addDoc(collection(db, "archive"), {
+      email: report.email,
+      locationTitle: report.locationTitle,
+      reportText: report.reportText,
+      createdAt: serverTimestamp(),
+    });
+
+    // 2. Delete from reports collection
+    await deleteDoc(doc(db, "reports", report.id));
+
+    // 3. Update UI para mawala sa modal
+    setReports((prev) => prev.filter((r) => r.id !== report.id));
+
+    alert("Report moved to archive!");
+  } catch (error) {
+    console.error("Error resolving report:", error);
+  } finally {
+    setResolvingReportId(null);
+  }
+};
+
   // Fetch landmarks data
   const fetchLandmarks = async () => {
     try {
@@ -862,12 +888,13 @@ function Admin() {
             <div className="activity-header">
               <time className="activity-date">{report.createdAt}</time>
               <button
-                className="resolve-button"
-                onClick={() => openConfirmModal(report)}
-                disabled={resolvingReportId === report.id}
-              >
-                {resolvingReportId === report.id ? 'Resolving...' : 'Resolve'}
-              </button>
+              className="resolve-button"
+              onClick={() => resolveReport(report)}
+              disabled={resolvingReportId === report.id}
+            >
+              {resolvingReportId === report.id ? "Resolving..." : "Resolve"}
+            </button>
+
             </div>
             <div className="activity-text">
               <strong>Email:</strong> {report.email} <br />
