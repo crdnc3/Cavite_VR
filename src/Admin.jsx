@@ -58,13 +58,30 @@ function Admin() {
   const [filteredPlaceData, setFilteredPlaceData] = useState([]);
   const [allUsersData, setAllUsersData] = useState([]);
 
+  // NEW: Custom date states
+  const [showCustomDatePicker, setShowCustomDatePicker] = useState(false);
+  const [customStartDate, setCustomStartDate] = useState('');
+  const [customEndDate, setCustomEndDate] = useState('');
+  const [printShowCustomDatePicker, setPrintShowCustomDatePicker] = useState(false);
+  const [printCustomStartDate, setPrintCustomStartDate] = useState('');
+  const [printCustomEndDate, setPrintCustomEndDate] = useState('');
+
   const navigate = useNavigate();
 
-  // Helper function to get date range
-  const getDateRange = (filter) => {
+  // Enhanced date range function with custom date support
+  const getDateRange = (filter, customStart = null, customEnd = null) => {
+    if (filter === 'custom' && customStart && customEnd) {
+      const startDate = new Date(customStart);
+      startDate.setHours(0, 0, 0, 0);
+      const endDate = new Date(customEnd);
+      endDate.setHours(23, 59, 59, 999);
+      return [startDate, endDate];
+    }
+
     const now = new Date();
     const startOfWeek = new Date(now);
     startOfWeek.setDate(now.getDate() - now.getDay());
+    startOfWeek.setHours(0, 0, 0, 0);
 
     const startOfLastWeek = new Date(startOfWeek);
     startOfLastWeek.setDate(startOfWeek.getDate() - 7);
@@ -72,10 +89,14 @@ function Admin() {
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
     const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+    endOfLastMonth.setHours(23, 59, 59, 999);
 
     const startOfYear = new Date(now.getFullYear(), 0, 1);
     const startOfLastYear = new Date(now.getFullYear() - 1, 0, 1);
     const endOfLastYear = new Date(now.getFullYear() - 1, 11, 31);
+    endOfLastYear.setHours(23, 59, 59, 999);
+
+    now.setHours(23, 59, 59, 999);
 
     switch (filter) {
       case 'thisWeek':
@@ -95,31 +116,82 @@ function Admin() {
     }
   };
 
-const resolveReport = async (report) => {
-  try {
-    setResolvingReportId(report.id);
+  // Format date range for display
+  const formatDateRangeDisplay = (filter, customStart = null, customEnd = null) => {
+    if (filter === 'custom' && customStart && customEnd) {
+      const start = new Date(customStart).toLocaleDateString();
+      const end = new Date(customEnd).toLocaleDateString();
+      return `Custom Range (${start} - ${end})`;
+    }
 
-    // 1. Save to archive
-    await addDoc(collection(db, "archive"), {
-      email: report.email,
-      locationTitle: report.locationTitle,
-      reportText: report.reportText,
-      createdAt: serverTimestamp(),
-    });
+    switch (filter) {
+      case 'thisWeek':
+        return 'This Week';
+      case 'lastWeek':
+        return 'Last Week';
+      case 'thisMonth':
+        return 'This Month';
+      case 'lastMonth':
+        return 'Last Month';
+      case 'thisYear':
+        return 'This Year';
+      case 'lastYear':
+        return 'Last Year';
+      default:
+        return 'Unknown Period';
+    }
+  };
 
-    // 2. Delete from reports collection
-    await deleteDoc(doc(db, "reports", report.id));
+  // Validate custom date range
+  const validateCustomDateRange = (startDate, endDate) => {
+    if (!startDate || !endDate) {
+      toast.error('Please select both start and end dates');
+      return false;
+    }
+    
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    
+    if (start > end) {
+      toast.error('Start date cannot be later than end date');
+      return false;
+    }
+    
+    const today = new Date();
+    if (start > today) {
+      toast.error('Start date cannot be in the future');
+      return false;
+    }
+    
+    return true;
+  };
 
-    // 3. Update UI para mawala sa modal
-    setReports((prev) => prev.filter((r) => r.id !== report.id));
+  const resolveReport = async (report) => {
+    try {
+      setResolvingReportId(report.id);
 
-    alert("Report moved to archive!");
-  } catch (error) {
-    console.error("Error resolving report:", error);
-  } finally {
-    setResolvingReportId(null);
-  }
-};
+      // 1. Save to archive
+      await addDoc(collection(db, "archive"), {
+        email: report.email,
+        locationTitle: report.locationTitle,
+        reportText: report.reportText,
+        createdAt: serverTimestamp(),
+      });
+
+      // 2. Delete from reports collection
+      await deleteDoc(doc(db, "reports", report.id));
+
+      // 3. Update UI para mawala sa modal
+      setReports((prev) => prev.filter((r) => r.id !== report.id));
+
+      toast.success("Report moved to archive!");
+    } catch (error) {
+      console.error("Error resolving report:", error);
+      toast.error("Failed to resolve report");
+    } finally {
+      setResolvingReportId(null);
+    }
+  };
 
   // Fetch landmarks data
   const fetchLandmarks = async () => {
@@ -157,9 +229,9 @@ const resolveReport = async (report) => {
     }
   };
 
-  // Filter users by date for print functionality
-  const filterPlaceDataByDate = (timeFilter) => {
-    const [startDate, endDate] = getDateRange(timeFilter);
+  // Enhanced filter users by date for print functionality
+  const filterPlaceDataByDate = (timeFilter, customStart = null, customEnd = null) => {
+    const [startDate, endDate] = getDateRange(timeFilter, customStart, customEnd);
     
     if (!startDate || !endDate) {
       return { filteredData: placeDistribution, filteredUsers: usersByPlace };
@@ -170,16 +242,20 @@ const resolveReport = async (report) => {
 
     allUsersData.forEach((user) => {
       if (user.createdAt && user.createdAt !== 'No date') {
-        const userDate = new Date(user.createdAt);
-        if (userDate >= startDate && userDate <= endDate) {
-          const region = user.region || 'Unknown';
-          const place = user.place || 'Unknown';
-          const name = user.name || 'User';
+        try {
+          const userDate = new Date(user.createdAt);
+          if (userDate >= startDate && userDate <= endDate) {
+            const region = user.region || 'Unknown';
+            const place = user.place || 'Unknown';
+            const name = user.name || 'User';
 
-          if (!regionUsers[region]) regionUsers[region] = [];
-          regionUsers[region].push({ name, place, createdAt: user.createdAt });
+            if (!regionUsers[region]) regionUsers[region] = [];
+            regionUsers[region].push({ name, place, createdAt: user.createdAt });
 
-          regionCount[region] = (regionCount[region] || 0) + 1;
+            regionCount[region] = (regionCount[region] || 0) + 1;
+          }
+        } catch (error) {
+          console.error('Error parsing user date:', error);
         }
       }
     });
@@ -189,21 +265,41 @@ const resolveReport = async (report) => {
     return { filteredData, filteredUsers: regionUsers };
   };
 
-  // Handle print time filter change
+  // Handle print time filter change with custom date support
   const handlePrintTimeFilterChange = (e) => {
     const newFilter = e.target.value;
     setPrintTimeFilter(newFilter);
-    const { filteredData } = filterPlaceDataByDate(newFilter);
-    setFilteredPlaceData(filteredData);
+    
+    if (newFilter === 'custom') {
+      setPrintShowCustomDatePicker(true);
+    } else {
+      setPrintShowCustomDatePicker(false);
+      const { filteredData } = filterPlaceDataByDate(newFilter);
+      setFilteredPlaceData(filteredData);
+    }
   };
 
-  // Print function
+  // Apply custom date filter for print
+  const applyPrintCustomDateFilter = () => {
+    if (!validateCustomDateRange(printCustomStartDate, printCustomEndDate)) {
+      return;
+    }
+
+    const { filteredData } = filterPlaceDataByDate('custom', printCustomStartDate, printCustomEndDate);
+    setFilteredPlaceData(filteredData);
+    setPrintShowCustomDatePicker(false);
+    toast.success('Custom date range applied successfully');
+  };
+
+  // Enhanced print function with custom date support
   const handlePrint = () => {
-    const { filteredData, filteredUsers } = filterPlaceDataByDate(printTimeFilter);
+    const customStart = printTimeFilter === 'custom' ? printCustomStartDate : null;
+    const customEnd = printTimeFilter === 'custom' ? printCustomEndDate : null;
+    const { filteredData, filteredUsers } = filterPlaceDataByDate(printTimeFilter, customStart, customEnd);
     
     const printWindow = window.open('', '_blank');
     const currentDate = new Date().toLocaleDateString();
-    const timeFilterLabel = printTimeFilter.charAt(0).toUpperCase() + printTimeFilter.slice(1);
+    const timeFilterLabel = formatDateRangeDisplay(printTimeFilter, customStart, customEnd);
     
     let totalFilteredUsers = 0;
     let userDetailsHTML = '';
@@ -366,7 +462,7 @@ const resolveReport = async (report) => {
       <body>
         <div class="header">
           <h1>User Registration Statistics</h1>
-          <h2>${timeFilterLabel} Period</h2>
+          <h2>${timeFilterLabel}</h2>
           <p>Generated on: ${currentDate}</p>
         </div>
 
@@ -419,37 +515,138 @@ const resolveReport = async (report) => {
     toast.success('Print report generated successfully');
   };
 
-  const filterUsersByDate = () => {
-    const [startDate, endDate] = getDateRange(selectedTimeFilter);
+  // Enhanced filtering function for Total Users modal with custom date support
+  const filterUsersByDate = (timeFilter = selectedTimeFilter, customStart = null, customEnd = null) => {
+    const [startDate, endDate] = getDateRange(timeFilter, customStart, customEnd);
 
-    const allUsers = [
-      ...appUsers.map((user) => ({
-        id: user.id,
-        name: user.name || 'No name',
-        email: user.email || 'No email',
-        createdAt: user.createdAt || 'No date',
-        source: 'App',
-      })),
-      ...logs.map((log) => ({
-        id: log.id,
-        name: log.logMessage.split(' ')[0] || 'No name',
-        createdAt: log.createdAt || 'No date',
-        source: 'Web',
-      })),
-    ];
+    if (!startDate || !endDate) {
+      setFilteredUsers([]);
+      return;
+    }
 
-    const filtered = allUsers.filter((user) => {
-      if (user.createdAt === 'No date') return false;
-      const userDate = new Date(user.createdAt);
-      return userDate >= startDate && userDate <= endDate;
+    const allUsers = [];
+
+    // Add App Users
+    appUsers.forEach((user) => {
+      if (user.createdAt && user.createdAt !== 'No date') {
+        try {
+          const userDate = new Date(user.createdAt);
+          if (userDate >= startDate && userDate <= endDate) {
+            allUsers.push({
+              id: user.id,
+              name: user.name || 'No name',
+              email: user.email || 'No email',
+              createdAt: user.createdAt,
+              source: 'App',
+              type: 'App User'
+            });
+          }
+        } catch (error) {
+          console.error('Error parsing app user date:', error);
+        }
+      }
     });
 
-    setFilteredUsers(filtered);
+    // Add Web Users from allUsersData
+    allUsersData.forEach((user) => {
+      if (user.source === 'Web' && user.createdAt && user.createdAt !== 'No date') {
+        try {
+          const userDate = new Date(user.createdAt);
+          if (userDate >= startDate && userDate <= endDate) {
+            allUsers.push({
+              id: `web-${user.name}-${user.createdAt}`,
+              name: user.name || 'Web User',
+              email: 'Not available',
+              createdAt: user.createdAt,
+              source: 'Web',
+              type: 'Web Registration',
+              region: user.region,
+              place: user.place
+            });
+          }
+        } catch (error) {
+          console.error('Error parsing web user date:', error);
+        }
+      }
+    });
+
+    // Sort by date (newest first)
+    allUsers.sort((a, b) => {
+      const dateA = new Date(a.createdAt);
+      const dateB = new Date(b.createdAt);
+      return dateB - dateA;
+    });
+
+    setFilteredUsers(allUsers);
   };
 
+  // Get total count for the selected time period with custom date support
+  const getTotalUsersForPeriod = (timeFilter, customStart = null, customEnd = null) => {
+    const [startDate, endDate] = getDateRange(timeFilter, customStart, customEnd);
+    
+    if (!startDate || !endDate) return 0;
+
+    let count = 0;
+
+    // Count App Users
+    appUsers.forEach((user) => {
+      if (user.createdAt && user.createdAt !== 'No date') {
+        try {
+          const userDate = new Date(user.createdAt);
+          if (userDate >= startDate && userDate <= endDate) {
+            count++;
+          }
+        } catch (error) {
+          console.error('Error parsing app user date:', error);
+        }
+      }
+    });
+
+    // Count Web Users
+    allUsersData.forEach((user) => {
+      if (user.source === 'Web' && user.createdAt && user.createdAt !== 'No date') {
+        try {
+          const userDate = new Date(user.createdAt);
+          if (userDate >= startDate && userDate <= endDate) {
+            count++;
+          }
+        } catch (error) {
+          console.error('Error parsing web user date:', error);
+        }
+      }
+    });
+
+    return count;
+  };
+
+  // Handle total users click
   const handleTotalUsersClick = () => {
-    filterUsersByDate();
+    filterUsersByDate(selectedTimeFilter);
     setShowTimeModal(true);
+  };
+
+  // Handle time filter change with custom date support
+  const handleTimeFilterChange = (e) => {
+    const newTimeFilter = e.target.value;
+    setSelectedTimeFilter(newTimeFilter);
+    
+    if (newTimeFilter === 'custom') {
+      setShowCustomDatePicker(true);
+    } else {
+      setShowCustomDatePicker(false);
+      filterUsersByDate(newTimeFilter);
+    }
+  };
+
+  // Apply custom date filter for Total Users
+  const applyCustomDateFilter = () => {
+    if (!validateCustomDateRange(customStartDate, customEndDate)) {
+      return;
+    }
+
+    filterUsersByDate('custom', customStartDate, customEndDate);
+    setShowCustomDatePicker(false);
+    toast.success('Custom date range applied successfully');
   };
 
   useEffect(() => {
@@ -470,7 +667,7 @@ const resolveReport = async (report) => {
         querySnapshotUsers.docs.forEach((doc) => {
           const data = doc.data();
           const region = data.region || 'Unknown';
-          const place = data.place || data.placeSelected; // wala nang 'Unknown' fallback
+          const place = data.place || data.placeSelected;
           const name = data.name || data.username || 'User';
           const createdAt = data.createdAt ? data.createdAt.toDate().toLocaleString() : 'No date';
 
@@ -582,11 +779,6 @@ const resolveReport = async (report) => {
     const { filteredData } = filterPlaceDataByDate(printTimeFilter);
     setFilteredPlaceData(filteredData);
   }, [placeDistribution, allUsersData, printTimeFilter]);
-
-  const handleTimeFilterChange = (e) => {
-    setSelectedTimeFilter(e.target.value);
-    setTimeout(() => filterUsersByDate(), 0);
-  };
 
   const handleUserCardClick = () => {
     navigate('/Users');
@@ -755,7 +947,7 @@ const resolveReport = async (report) => {
         </div>
       </div>
 
-      {/* Print Statistics Modal */}
+      {/* Enhanced Print Statistics Modal with Custom Date */}
       {showPrintModal && (
         <div className="modal-overlay" onClick={() => setShowPrintModal(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -776,12 +968,49 @@ const resolveReport = async (report) => {
                 <option value="lastMonth">Last Month</option>
                 <option value="thisYear">This Year</option>
                 <option value="lastYear">Last Year</option>
+                <option value="custom">Custom Date Range</option>
               </select>
             </div>
 
+            {/* Custom Date Picker for Print */}
+            {printShowCustomDatePicker && (
+              <div className="custom-date-section">
+                <div className="date-inputs">
+                  <div className="date-input-group">
+                    <label htmlFor="print-start-date" className="date-label">Start Date:</label>
+                    <input
+                      type="date"
+                      id="print-start-date"
+                      value={printCustomStartDate}
+                      onChange={(e) => setPrintCustomStartDate(e.target.value)}
+                      className="date-input"
+                      max={new Date().toISOString().split('T')[0]}
+                    />
+                  </div>
+                  <div className="date-input-group">
+                    <label htmlFor="print-end-date" className="date-label">End Date:</label>
+                    <input
+                      type="date"
+                      id="print-end-date"
+                      value={printCustomEndDate}
+                      onChange={(e) => setPrintCustomEndDate(e.target.value)}
+                      className="date-input"
+                      max={new Date().toISOString().split('T')[0]}
+                    />
+                  </div>
+                </div>
+                <button 
+                  onClick={applyPrintCustomDateFilter}
+                  className="btn-apply-date"
+                >
+                  Apply Custom Range
+                </button>
+              </div>
+            )}
+
             <div className="preview-summary">
               <h4>Report Preview</h4>
-              <p><strong>Period:</strong> {printTimeFilter.charAt(0).toUpperCase() + printTimeFilter.slice(1)}</p>
+              <p><strong>Period:</strong> {formatDateRangeDisplay(printTimeFilter, printCustomStartDate, printCustomEndDate)}</p>
               <p><strong>Total Users:</strong> {filteredPlaceData.reduce((sum, item) => sum + item.value, 0)}</p>
               <p><strong>Active Regions:</strong> {filteredPlaceData.length}</p>
             </div>
@@ -796,6 +1025,7 @@ const resolveReport = async (report) => {
               <button 
                 onClick={handlePrint}
                 className="btn-primary"
+                disabled={printTimeFilter === 'custom' && (!printCustomStartDate || !printCustomEndDate)}
               >
                 Generate Report
               </button>
@@ -804,7 +1034,7 @@ const resolveReport = async (report) => {
         </div>
       )}
 
-      {/* Time Modal */}
+      {/* Enhanced Time Modal for Total Users with Custom Date */}
       {showTimeModal && (
         <div className="time-registration-modal-overlay" onClick={() => setShowTimeModal(false)}>
           <div className="time-registration-modal-content" onClick={(e) => e.stopPropagation()}>
@@ -828,21 +1058,84 @@ const resolveReport = async (report) => {
                 onChange={handleTimeFilterChange}
                 className="time-registration-dropdown"
               >
-                <option value="thisWeek">This Week ({filteredUsers.length} users)</option>
-                <option value="lastWeek">Last Week</option>
-                <option value="thisMonth">This Month</option>
-                <option value="lastMonth">Last Month</option>
-                <option value="thisYear">This Year</option>
-                <option value="lastYear">Last Year</option>
+                <option value="thisWeek">
+                  This Week ({getTotalUsersForPeriod('thisWeek')} users)
+                </option>
+                <option value="lastWeek">
+                  Last Week ({getTotalUsersForPeriod('lastWeek')} users)
+                </option>
+                <option value="thisMonth">
+                  This Month ({getTotalUsersForPeriod('thisMonth')} users)
+                </option>
+                <option value="lastMonth">
+                  Last Month ({getTotalUsersForPeriod('lastMonth')} users)
+                </option>
+                <option value="thisYear">
+                  This Year ({getTotalUsersForPeriod('thisYear')} users)
+                </option>
+                <option value="lastYear">
+                  Last Year ({getTotalUsersForPeriod('lastYear')} users)
+                </option>
+                <option value="custom">
+                  Custom Date Range ({selectedTimeFilter === 'custom' && customStartDate && customEndDate ? getTotalUsersForPeriod('custom', customStartDate, customEndDate) : 0} users)
+                </option>
               </select>
             </div>
+
+            {/* Custom Date Picker for Total Users */}
+            {showCustomDatePicker && (
+              <div className="custom-date-section">
+                <div className="date-inputs">
+                  <div className="date-input-group">
+                    <label htmlFor="start-date" className="date-label">Start Date:</label>
+                    <input
+                      type="date"
+                      id="start-date"
+                      value={customStartDate}
+                      onChange={(e) => setCustomStartDate(e.target.value)}
+                      className="date-input"
+                      max={new Date().toISOString().split('T')[0]}
+                    />
+                  </div>
+                  <div className="date-input-group">
+                    <label htmlFor="end-date" className="date-label">End Date:</label>
+                    <input
+                      type="date"
+                      id="end-date"
+                      value={customEndDate}
+                      onChange={(e) => setCustomEndDate(e.target.value)}
+                      className="date-input"
+                      max={new Date().toISOString().split('T')[0]}
+                    />
+                  </div>
+                </div>
+                <button 
+                  onClick={applyCustomDateFilter}
+                  className="btn-apply-date"
+                >
+                  Apply Custom Range
+                </button>
+              </div>
+            )}
 
             <div className="time-stats-summary">
               <div className="time-stat-card">
                 <span className="time-stat-number">{filteredUsers.length}</span>
                 <span className="time-stat-label">
-                  {selectedTimeFilter.charAt(0).toUpperCase() + selectedTimeFilter.slice(1)} Registrations
+                  {formatDateRangeDisplay(selectedTimeFilter, customStartDate, customEndDate)} Registrations
                 </span>
+              </div>
+              <div className="time-stat-card">
+                <span className="time-stat-number">
+                  {filteredUsers.filter(user => user.source === 'Web').length}
+                </span>
+                <span className="time-stat-label">Web Users</span>
+              </div>
+              <div className="time-stat-card">
+                <span className="time-stat-number">
+                  {filteredUsers.filter(user => user.source === 'App').length}
+                </span>
+                <span className="time-stat-label">App Users</span>
               </div>
             </div>
 
@@ -850,10 +1143,22 @@ const resolveReport = async (report) => {
               {filteredUsers.length > 0 ? (
                 <div className="time-users-grid">
                   {filteredUsers.map((user, index) => (
-                    <div key={index} className="time-user-card">
+                    <div key={index} className={`time-user-card ${user.source.toLowerCase()}`}>
                       <div className="time-user-info">
-                        <h4 className="time-user-name">{user.name || 'User'}</h4>
+                        <h4 className="time-user-name">{user.name}</h4>
+                        <span className="time-user-type">{user.type}</span>
                         <span className="time-user-date">{user.createdAt}</span>
+                        {user.region && user.place && (
+                          <span className="time-user-location">
+                            {user.region} - {user.place}
+                          </span>
+                        )}
+                        {user.email && user.email !== 'Not available' && (
+                          <span className="time-user-email">{user.email}</span>
+                        )}
+                      </div>
+                      <div className="time-user-source-badge">
+                        {user.source}
                       </div>
                     </div>
                   ))}
@@ -861,6 +1166,7 @@ const resolveReport = async (report) => {
               ) : (
                 <div className="time-no-users">
                   <p>No users registered in the selected time period.</p>
+                  <small>Try selecting a different time range to see more results.</small>
                 </div>
               )}
             </div>
@@ -877,81 +1183,79 @@ const resolveReport = async (report) => {
         </div>
       )}
 
-{/* Reports Modal */}
-{showReportModal && (
-  <div className="modal-overlay" onClick={() => setShowReportModal(false)}>
-    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-      <h3>Submitted Feedbacks</h3>
-      <div className="modal-scrollable">
-        {reports.map((report) => (
-          <div key={report.id} className="activity-card reports-card">
-            <div className="activity-header">
-              <time className="activity-date">{report.createdAt}</time>
-              <button
-              className="resolve-button"
-              onClick={() => resolveReport(report)}
-              disabled={resolvingReportId === report.id}
-            >
-              {resolvingReportId === report.id ? "Resolving..." : "Resolve"}
+      {/* Reports Modal */}
+      {showReportModal && (
+        <div className="modal-overlay" onClick={() => setShowReportModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h3>Submitted Feedbacks</h3>
+            <div className="modal-scrollable">
+              {reports.map((report) => (
+                <div key={report.id} className="activity-card reports-card">
+                  <div className="activity-header">
+                    <time className="activity-date">{report.createdAt}</time>
+                    <button
+                      className="resolve-button"
+                      onClick={() => resolveReport(report)}
+                      disabled={resolvingReportId === report.id}
+                    >
+                      {resolvingReportId === report.id ? "Resolving..." : "Resolve"}
+                    </button>
+                  </div>
+                  <div className="activity-text">
+                    <strong>Email:</strong> {report.email} <br />
+                    <strong>Location:</strong> {report.locationTitle} <br />
+                    <strong>Message:</strong> {report.reportText}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <button onClick={() => setShowReportModal(false)} className="btn-secondary">
+              Close
             </button>
+          </div>
+        </div>
+      )}
 
+      {/* Log Modal */}
+      {showLogModal && (
+        <div className="modal-overlay" onClick={() => setShowLogModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h3>Activity Log</h3>
+            <div className="modal-scrollable">
+              {logs.map((log) => (
+                <div key={log.id} className="activity-card logs-card">
+                  <p className="activity-text">{log.logMessage}</p>
+                  <span className="activity-date">{log.createdAt}</span>
+                </div>
+              ))}
             </div>
-            <div className="activity-text">
-              <strong>Email:</strong> {report.email} <br />
-              <strong>Location:</strong> {report.locationTitle} <br />
-              <strong>Message:</strong> {report.reportText}
+            <button onClick={() => setShowLogModal(false)} className="btn-secondary">
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* App Users Modal */}
+      {showAppUsersModal && (
+        <div className="modal-overlay" onClick={() => setShowAppUsersModal(false)}>
+          <div className="modal-content users-modal" onClick={(e) => e.stopPropagation()}>
+            <h3>App Registered Users</h3>
+            <div className="modal-scrollable">
+              {appUsers.map((user) => (
+                <div key={user.id} className="activity-card users-card">
+                  <p className="activity-text"><strong>{user.name}</strong></p>
+                  <span className="activity-date">{user.createdAt}</span>
+                  <div className="activity-subtext">{user.email}</div>
+                </div>
+              ))}
             </div>
+            <button onClick={() => setShowAppUsersModal(false)} className="btn-secondary">
+              Close
+            </button>
           </div>
-        ))}
-      </div>
-      <button onClick={() => setShowReportModal(false)} className="btn-secondary">
-        Close
-      </button>
-    </div>
-  </div>
-)}
-
-{/* Log Modal */}
-{showLogModal && (
-  <div className="modal-overlay" onClick={() => setShowLogModal(false)}>
-    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-      <h3>Activity Log</h3>
-      <div className="modal-scrollable">
-        {logs.map((log) => (
-          <div key={log.id} className="activity-card logs-card">
-            <p className="activity-text">{log.logMessage}</p>
-            <span className="activity-date">{log.createdAt}</span>
-          </div>
-        ))}
-      </div>
-      <button onClick={() => setShowLogModal(false)} className="btn-secondary">
-        Close
-      </button>
-    </div>
-  </div>
-)}
-
-{/* App Users Modal */}
-{showAppUsersModal && (
-  <div className="modal-overlay" onClick={() => setShowAppUsersModal(false)}>
-    <div className="modal-content users-modal" onClick={(e) => e.stopPropagation()}>
-      <h3>App Registered Users</h3>
-      <div className="modal-scrollable">
-        {appUsers.map((user) => (
-          <div key={user.id} className="activity-card users-card">
-            <p className="activity-text"><strong>{user.name}</strong></p>
-            <span className="activity-date">{user.createdAt}</span>
-            <div className="activity-subtext">{user.email}</div>
-          </div>
-        ))}
-      </div>
-      <button onClick={() => setShowAppUsersModal(false)} className="btn-secondary">
-        Close
-      </button>
-    </div>
-  </div>
-)}
-
+        </div>
+      )}
 
     </div>
   );
