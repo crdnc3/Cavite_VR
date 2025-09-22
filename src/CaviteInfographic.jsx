@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { collection, getDocs, addDoc, serverTimestamp } from "firebase/firestore";
 import { db, auth } from "./firebase";
+import { onAuthStateChanged } from "firebase/auth"; // 👈 Import this
 import {
   Church,
   MapPin,
@@ -31,6 +32,19 @@ const CaviteInfographic = ({ searchTerm }) => {
   // Feedback states
   const [showFeedbackBox, setShowFeedbackBox] = useState(false);
   const [feedbackText, setFeedbackText] = useState('');
+
+  // 👇 Add current user state to track real auth state
+  const [currentUser, setCurrentUser] = useState(null);
+
+  // 👇 Add auth state listener
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setCurrentUser(user);
+      console.log("Auth state changed:", user?.email); // Debug log
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const fetchData = useCallback(async () => {
     try {
@@ -130,8 +144,8 @@ const CaviteInfographic = ({ searchTerm }) => {
 
   const handleSubmitFeedback = async () => {
     try {
-      const user = auth.currentUser;
-      if (!user) {
+      // 👇 Use currentUser from state instead of auth.currentUser directly
+      if (!currentUser) {
         alert("You must be logged in to submit feedback.");
         return;
       }
@@ -141,9 +155,21 @@ const CaviteInfographic = ({ searchTerm }) => {
         return;
       }
 
+      // 👇 Force refresh the auth state before submitting
+      await new Promise(resolve => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+          setCurrentUser(user);
+          unsubscribe();
+          resolve();
+        });
+      });
+
+      const finalUser = auth.currentUser; // Get the absolute current user
+      console.log("Submitting feedback with user:", finalUser?.email); // Debug log
+
       await addDoc(collection(db, "reports"), {
-        userId: user.uid,
-        email: user.email,
+        userId: finalUser.uid,
+        email: finalUser.email,
         locationTitle: selectedItem.name,
         reportText: feedbackText,
         submittedAt: serverTimestamp()
@@ -399,6 +425,12 @@ const CaviteInfographic = ({ searchTerm }) => {
                   <MessageCircle className="w-5 h-5" />
                   Leave Feedback
                 </button>
+                {/* 👇 Debug display - remove after testing */}
+                {currentUser && (
+                  <p style={{fontSize: '12px', color: '#666', marginTop: '5px'}}>
+                    Current user: {currentUser.email}
+                  </p>
+                )}
               </div>
             </div>
           </div>

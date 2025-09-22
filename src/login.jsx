@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { loginUser } from './firebaseAuth';
 import { auth, db } from './firebase';
 import { doc, getDoc } from 'firebase/firestore';
-import { sendPasswordResetEmail } from 'firebase/auth';
+import { sendPasswordResetEmail, signOut } from 'firebase/auth'; // 👈 Import signOut
 import './login.css';
 import newestlogo from './assets/images/newestlogo.png';
 import newerbg from './assets/images/newerbg.png';
@@ -17,7 +17,7 @@ const Login = () => {
   const [passwordError, setPasswordError] = useState('');
   const [loading, setLoading] = useState(false);
   const [resetMessage, setResetMessage] = useState('');
-  const [showPassword, setShowPassword] = useState(false); // 👈 toggle state
+  const [showPassword, setShowPassword] = useState(false);
 
   // modal states
   const [showPrivacy, setShowPrivacy] = useState(false);
@@ -48,6 +48,13 @@ const Login = () => {
     if (valid) {
       setLoading(true);
       try {
+        // 👇 Clear any existing auth state first
+        await signOut(auth);
+        localStorage.clear(); // Clear all localStorage data
+        
+        // Small delay to ensure clean state
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
         const user = await loginUser(email, password);
 
         if (!user.emailVerified) {
@@ -61,7 +68,11 @@ const Login = () => {
 
         if (userDoc.exists()) {
           const userData = userDoc.data();
+          
+          // 👇 Store fresh user data
           localStorage.setItem('userData', JSON.stringify(userData));
+          
+          console.log("Login successful for:", user.email); // Debug log
 
           if (userData.role === 'Admin') {
             navigate('/Admin');
@@ -72,6 +83,7 @@ const Login = () => {
           setPasswordError('Account setup is incomplete.');
         }
       } catch (error) {
+        console.error("Login error:", error);
         setPasswordError('Invalid email or password');
       } finally {
         setLoading(false);
@@ -138,7 +150,7 @@ const Login = () => {
           />
           <label className="floating-label">Password</label>
 
-          {/* 👇 toggle button inside input */}
+          {/* toggle button inside input */}
           <button
             type="button"
             className="toggle-password"
@@ -245,7 +257,7 @@ const Login = () => {
                 <b>Information We Collect:</b> We only collect your <b>email</b>, <b>region</b>,
                 and <b>city</b>. This information is important for our data analytics, allowing us
                 to understand how many people from different regions and cities are interested
-                in Cavite’s historical sites. The data helps us improve content and prioritize
+                in Cavite's historical sites. The data helps us improve content and prioritize
                 features based on user interest.
               </li>
               <li>
