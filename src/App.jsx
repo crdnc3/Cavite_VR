@@ -5,7 +5,6 @@ import {
   Routes,
   useLocation,
   Navigate,
-  Outlet,
 } from 'react-router-dom';
 import Login from './login';
 import Register from './register';
@@ -26,14 +25,6 @@ import ContentManager from './connman';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase';
 
-// ✅ Protected Route Layout
-const ProtectedRoute = ({ user }) => {
-  if (!user) {
-    return <Navigate to="/" replace />;
-  }
-  return <Outlet />;
-};
-
 const AppWrapper = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [user, setUser] = useState(null);
@@ -50,7 +41,32 @@ const AppWrapper = () => {
 
   if (loading) return <div>Loading...</div>;
 
-  // ✅ All lowercase para walang conflict
+  // ✅ Allowed routes depende kung user o admin
+  const allowedRoutes = user
+    ? [
+        // normal user routes
+        '/home',
+        '/about',
+        '/faq',
+        '/profile',
+        '/review',
+        '/caviteinfographic',
+        // admin routes
+        '/admin',
+        '/users',
+        '/support',
+        '/archive',
+        '/conman',
+        '/content-manager',
+      ]
+    : [
+        // public routes
+        '/',
+        '/login',
+        '/register',
+      ];
+
+  // ✅ Hide navbar sa ilang path
   const hideNavBarPaths = [
     '/',
     '/login',
@@ -63,11 +79,14 @@ const AppWrapper = () => {
     '/conman',
     '/content-manager',
   ];
-
-  // ✅ Always check lowercase para safe
   const shouldShowNavBar = !hideNavBarPaths.includes(
     location.pathname.toLowerCase()
   );
+
+  // ✅ Lockdown: kung wala sa allowedRoutes → redirect
+  if (!allowedRoutes.some((p) => location.pathname.toLowerCase().startsWith(p))) {
+    return <Navigate to={user ? '/home' : '/'} replace />;
+  }
 
   return (
     <>
@@ -80,26 +99,26 @@ const AppWrapper = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        {/* ✅ Protected Routes */}
-        <Route element={<ProtectedRoute user={user} />}>
-          <Route path="/home" element={<Home searchTerm={searchTerm} />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/faq" element={<FAQ />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/review/:id" element={<Review />} />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/users" element={<Users />} />
-          <Route path="/support" element={<Support />} />
-          <Route path="/archive" element={<Archive />} />
-          <Route path="/conman" element={<Conman />} />
-          <Route path="/content-manager" element={<ContentManager />} />
-          <Route
-            path="/caviteinfographic"
-            element={<CaviteInfographic searchTerm={searchTerm} />}
-          />
-        </Route>
+        {/* User Routes */}
+        <Route path="/home" element={<Home searchTerm={searchTerm} />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/faq" element={<FAQ />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/review/:id" element={<Review />} />
+        <Route
+          path="/caviteinfographic"
+          element={<CaviteInfographic searchTerm={searchTerm} />}
+        />
 
-        {/* ✅ Catch-all route → balik LandingPage */}
+        {/* Admin Routes */}
+        <Route path="/admin" element={<Admin />} />
+        <Route path="/users" element={<Users />} />
+        <Route path="/support" element={<Support />} />
+        <Route path="/archive" element={<Archive />} />
+        <Route path="/conman" element={<Conman />} />
+        <Route path="/content-manager" element={<ContentManager />} />
+
+        {/* Catch-all */}
         <Route path="*" element={<LandingPage />} />
       </Routes>
     </>
