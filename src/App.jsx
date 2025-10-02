@@ -10,7 +10,6 @@ import {
 import Login from './login';
 import Register from './register';
 import LandingPage from './landingpage';
-import Home from './home';
 import About from './about';
 import FAQ from './faq';
 import Profile from './profile';
