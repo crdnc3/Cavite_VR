@@ -81,7 +81,6 @@ const AppWrapper = () => {
 
         {/* ✅ Protected Routes */}
         <Route element={<ProtectedRoute user={user} />}>
-          <Route path="/home" element={<Home searchTerm={searchTerm} />} />
           <Route path="/about" element={<About />} />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/profile" element={<Profile />} />
