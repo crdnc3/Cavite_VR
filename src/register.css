@@ -63,25 +63,28 @@ html, body {
 .register-card {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(20px);
-    width: 50%;
-    height: 100%;
+    width: 45%; /* adjust as needed */
+    max-height: 90vh; /* limit height to viewport */
     padding: 40px;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15), 
-                0 12px 24px rgba(0, 0, 0, 0.1),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.15), 
+        0 12px 24px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
     box-sizing: border-box;
-    border-top-left-radius: 30px;
-    border-bottom-left-radius: 30px;
-    position: relative;
-    overflow-y: auto; /* Enable vertical scrolling */
-    max-height: 100vh; /* Limit height to make it scrollable */
+    border-radius: 30px; /* all sides rounded */
+    position: absolute;
+    top: 50%;       /* vertical center */
+    right: 60px;    /* space from right */
+    transform: translateY(-50%);
+    overflow-y: auto; /* scroll if content exceeds max-height */
+    
 }
 
-/* Add subtle inner glow */
+/* Subtle inner glow */
 .register-card::before {
     content: '';
     position: absolute;
@@ -91,6 +94,33 @@ html, body {
     height: 2px;
     background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
     border-top-left-radius: 30px;
+    border-top-right-radius: 30px; /* make top glow match full width rounded */
+}
+
+/* Scrollbar for WebKit browsers (Chrome, Edge, Safari) */
+.register-card::-webkit-scrollbar {
+    width: 8px; /* scrollbar width */
+}
+
+.register-card::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.05); /* track background */
+    border-radius: 8px;
+}
+
+.register-card::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.2); /* draggable thumb */
+    border-radius: 8px;
+    transition: background 0.3s;
+}
+
+.register-card::-webkit-scrollbar-thumb:hover {
+    background: rgba(0,0,0,0.4); /* hover effect */
+}
+
+/* Firefox */
+.register-card {
+    scrollbar-width: thin;           /* thin scrollbar */
+    scrollbar-color: rgba(0,0,0,0.2) rgba(0,0,0,0.05); /* thumb track */
 }
 
 .register-title {
@@ -280,6 +310,12 @@ html, body {
     margin-top: 20px;
 }
 
+.login-forgot {
+    text-align: center;
+    margin-top: 10px;
+    right: inherit;
+}
+
 .register-terms {
     margin-top: 20px;
     text-align: center;
@@ -318,8 +354,9 @@ html, body {
     }
 
     .register-card {
-        width: 100%;
+        width: 90%;
         height: auto;
+        right:auto;
         border-radius: 10px;
         padding: 20px;
     }
@@ -332,6 +369,11 @@ html, body {
         width: 100%;
         flex-direction: column;
         gap: 12px;
+    }
+
+    .login-forgot {
+        text-align: center;
+        margin-top: -40px;
     }
 
     .register-button,
@@ -366,14 +408,14 @@ html, body {
 
     .region-select {
         padding: 16px;
-        width: 319px;
+        width: 338px;
         font-size: 14px;
         margin-left: -30px;
     }
 
     .place-select {
         padding: 16px;
-        width: 319px;
+        width: 338px;
         font-size: 14px;
         margin-left: -30px;
     }
