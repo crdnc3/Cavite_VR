@@ -173,12 +173,24 @@ body {
 
 .admin-web-users {
   background: linear-gradient(135deg, var(--white) 0%, #F0FDF4 100%);
-  border-left: 4px solid var(--success-color);
+  border-left: 4px solid #EF4444; /* Tailwind Red-500 */
 }
 
-.admin-app-users {
-  background: linear-gradient(135deg, var(--white) 0%, #FEF7FF 100%);
-  border-left: 4px solid var(--secondary-color);
+.admin-web-users::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #FCA5A5, #EF4444); /* red gradient line */
+  transform: scaleX(0); /* hidden by default */
+  transform-origin: left;
+  transition: transform 0.3s ease-in-out;
+}
+
+.admin-web-users:hover::before {
+  transform: scaleX(1); /* animate line on hover */
 }
 
 .admin-total-reports {
@@ -186,14 +198,65 @@ body {
   border-left: 4px solid var(--warning-color);
 }
 
+.admin-total-reports::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #FDE68A, #F59E0B); /* yellow to orange gradient line */
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease-in-out;
+}
+
+.admin-total-reports:hover::before {
+  transform: scaleX(1); /* animate line on hover */
+}
+
 .admin-log-updates {
   background: linear-gradient(135deg, var(--white) 0%, var(--gray-50) 100%);
   border-left: 4px solid var(--gray-500);
 }
 
+.admin-log-updates::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--gray-300), var(--gray-600)); /* gray gradient line */
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease-in-out;
+}
+
+.admin-log-updates:hover::before {
+  transform: scaleX(1); /* animated line on hover */
+}
+
 .admin-total-places {
   background: linear-gradient(135deg, var(--white) 0%, #ECFDF5 100%);
   border-left: 4px solid var(--success-color);
+}
+
+.admin-total-places::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #6EE7B7, #10B981); /* light to darker green gradient */
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease-in-out;
+}
+
+.admin-total-places:hover::before {
+  transform: scaleX(1); /* animate line on hover */
 }
 
 /* Charts Container */
@@ -413,6 +476,46 @@ body {
   flex-direction: column;
   justify-content: space-between;
 }
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding: 8px 12px;
+  background: var(--gray-50);
+  border-radius: 8px;
+  border: 1px solid var(--gray-200);
+  font-size: 0.875rem;
+}
+
+.pagination button {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--gray-300);
+  background: var(--white);
+  color: var(--gray-700);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pagination button:hover:not(:disabled) {
+  background: var(--blue-500);
+  color: var(--white);
+  border-color: var(--blue-500);
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  color: var(--gray-600);
+  font-weight: 500;
+}
+
 
 .place-card-container {
   display: grid;
@@ -930,42 +1033,70 @@ body {
   letter-spacing: 0.5px;
 }
 
-.time-users-container {
-  margin-bottom: 24px;
-}
-
 .time-users-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* medyo mas malapad cards */
+  gap: 20px;
+  padding: 10px;
 }
 
 .time-user-card {
-  background: var(--gray-50);
-  border-radius: var(--border-radius-md);
-  padding: 16px;
+  background: var(--white);
+  border-radius: var(--border-radius-lg);
+  padding: 20px;
   border: 1px solid var(--gray-200);
-  transition: all var(--transition-normal);
+  box-shadow: var(--shadow-xs);
+  transition: all 0.25s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .time-user-card:hover {
-  background: var(--white);
-  box-shadow: var(--shadow-sm);
-  transform: translateY(-2px);
+  background: var(--gray-50);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-4px);
 }
 
 .time-user-info h4 {
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 600;
   color: var(--gray-900);
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+.time-user-type {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--gray-700);
   margin-bottom: 4px;
+  display: block;
 }
 
 .time-user-date {
-  font-size: 0.8125rem;
+  font-size: 0.8rem;
   color: var(--gray-500);
   font-weight: 500;
+  margin-bottom: 6px;
+  display: block;
 }
+
+.time-user-location {
+  font-size: 0.8rem;
+  color: var(--gray-600);
+  margin-bottom: 6px;
+  display: block;
+}
+
+.time-user-email {
+  font-size: 0.78rem;
+  color: var(--primary-600);
+  word-break: break-word; /* para hindi sumabog yung long emails */
+  margin-top: 4px;
+  display: block;
+}
+
 
 .time-no-users {
   text-align: center;

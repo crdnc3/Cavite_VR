@@ -608,6 +608,22 @@ html.about {
   border-left-color: var(--ph-yellow);
 }
 
+.hover-reminder {
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 8px;
+  font-style: italic;
+  text-align: center;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { opacity: 0.5; }
+}
+
+
 /* Mobile Responsive */
 @media (max-width: 900px) {
   .team-layout {
@@ -654,6 +670,7 @@ html.about {
   text-align: center;
   position: relative;
   overflow: hidden;
+  height: 50vh;
 }
 
 .footer-cta::before {

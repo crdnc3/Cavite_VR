@@ -39,10 +39,7 @@ function Admin() {
   const [usersByPlace, setUsersByPlace] = useState({});
   const [showLogModal, setShowLogModal] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
-  const [showAppUsersModal, setShowAppUsersModal] = useState(false);
   const [resolvingReportId, setResolvingReportId] = useState(null);
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [selectedReport, setSelectedReport] = useState(null);
   const [showTimeModal, setShowTimeModal] = useState(false);
   const [selectedTimeFilter, setSelectedTimeFilter] = useState('thisWeek');
   const [filteredUsers, setFilteredUsers] = useState([]);
@@ -67,6 +64,8 @@ function Admin() {
   const [printCustomEndDate, setPrintCustomEndDate] = useState('');
 
   const navigate = useNavigate();
+
+  
 
   // Enhanced date range function with custom date support
   const getDateRange = (filter, customStart = null, customEnd = null) => {
@@ -115,6 +114,9 @@ function Admin() {
         return [null, null];
     }
   };
+
+  const [pageByRegion, setPageByRegion] = useState({});
+  const itemsPerPage = 10;
 
   // Format date range for display
   const formatDateRangeDisplay = (filter, customStart = null, customEnd = null) => {
@@ -821,18 +823,13 @@ function Admin() {
 
         <div className="admin-cards">
           <div className="admin-card admin-total-users" onClick={handleTotalUsersClick}>
-            <h3>Total Users</h3>
+            <h3>Users Analytics</h3>
             <p className="admin-number">{totalUsers}</p>
           </div>
 
           <div className="admin-card admin-web-users" onClick={handleUserCardClick}>
-            <h3>Web Registered</h3>
+            <h3>User Registered</h3>
             <p className="admin-number">{registeredWeb}</p>
-          </div>
-
-          <div className="admin-card admin-app-users" onClick={() => setShowAppUsersModal(true)}>
-            <h3>App Registered</h3>
-            <p className="admin-number">{registeredApp}</p>
           </div>
 
           <div className="admin-card admin-total-reports" onClick={() => setShowReportModal(true)}>
@@ -865,15 +862,19 @@ function Admin() {
                 <span className="loading-indicator">Loading...</span>
               )}
             </div>
-            <ResponsiveContainer width="100%" height={200}>
-              <BarChart data={landmarksData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="views" fill="#495057" />
-              </BarChart>
-            </ResponsiveContainer>
+        <ResponsiveContainer width="100%" height={200}>
+          <BarChart data={landmarksData} margin={{ top: 20, right: 20, left: 0, bottom: 10 }}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis
+                dataKey="name"
+                tickFormatter={(value) => value.length > 10 ? value.slice(0, 10) + '…' : value}
+              />
+              <YAxis />
+              <Tooltip />
+              <Bar dataKey="views" fill="#495057" />
+          </BarChart>
+        </ResponsiveContainer>
+
             
             <div className="landmarks-details">
               <h4>Site Details:</h4>
@@ -912,7 +913,10 @@ function Admin() {
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={placeDistribution}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
+                <XAxis
+                dataKey="name"
+                tickFormatter={(value) => value.length > 10 ? value.slice(0, 10) + '…' : value}
+                />
                 <YAxis />
                 <Tooltip />
                 <Legend />
@@ -925,24 +929,70 @@ function Admin() {
             </ResponsiveContainer>
 
             <div className="users-by-place-container">
-              {Object.entries(usersByPlace).map(([region, users]) => (
-                <div key={region} className="place-card">
-                <h4>
-                  <span className="region">{region}</span>
-                  <span className="count">
-                    {users.length} web user{users.length > 1 ? 's' : ''}
-                  </span>
-                </h4>
-                  <ul className="place-users-list">
-                    {users.map((user, i) => (
-                      <li key={i}>
-                        {user.name} – {user.place}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
+  {Object.entries(usersByPlace).map(([region, users]) => {
+    // dito ka puwede magdeclare ng const
+    const itemsPerPage = 10;
+    const page = pageByRegion[region] || 0;
+    const start = page * itemsPerPage;
+    const currentUsers = users.slice(start, start + itemsPerPage);
+    const totalPages = Math.ceil(users.length / itemsPerPage);
+
+    return (
+      <div key={region} className="place-card">
+        <h4>
+          <span className="region">{region}</span>
+          <span className="count">
+            {users.length} user{users.length > 1 ? 's' : ''}
+          </span>
+        </h4>
+        <ul className="place-users-list">
+          {currentUsers.map((user, i) => (
+            <li key={i}>
+              {user.name} – {user.place}
+            </li>
+          ))}
+        </ul>
+
+        {users.length > itemsPerPage && (
+          <div className="pagination flex justify-between items-center mt-3">
+            <button
+              onClick={() =>
+                setPageByRegion(prev => ({
+                  ...prev,
+                  [region]: Math.max((prev[region] || 0) - 1, 0),
+                }))
+              }
+              disabled={page === 0}
+              className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+            >
+              Prev
+            </button>
+
+            <span className="text-sm text-gray-600">
+              Page {page + 1} of {totalPages}
+            </span>
+
+            <button
+              onClick={() =>
+                setPageByRegion(prev => ({
+                  ...prev,
+                  [region]:
+                    (prev[region] || 0) + 1 < totalPages
+                      ? (prev[region] || 0) + 1
+                      : prev[region] || 0,
+                }))
+              }
+              disabled={page + 1 >= totalPages}
+              className="px-3 py-1 bg-blue-500 text-white rounded disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  })}
+</div>
           </div>
         </div>
       </div>
@@ -1125,18 +1175,6 @@ function Admin() {
                   {formatDateRangeDisplay(selectedTimeFilter, customStartDate, customEndDate)} Registrations
                 </span>
               </div>
-              <div className="time-stat-card">
-                <span className="time-stat-number">
-                  {filteredUsers.filter(user => user.source === 'Web').length}
-                </span>
-                <span className="time-stat-label">Web Users</span>
-              </div>
-              <div className="time-stat-card">
-                <span className="time-stat-number">
-                  {filteredUsers.filter(user => user.source === 'App').length}
-                </span>
-                <span className="time-stat-label">App Users</span>
-              </div>
             </div>
 
             <div className="time-users-container">
@@ -1146,7 +1184,6 @@ function Admin() {
                     <div key={index} className={`time-user-card ${user.source.toLowerCase()}`}>
                       <div className="time-user-info">
                         <h4 className="time-user-name">{user.name}</h4>
-                        <span className="time-user-type">{user.type}</span>
                         <span className="time-user-date">{user.createdAt}</span>
                         {user.region && user.place && (
                           <span className="time-user-location">
@@ -1156,9 +1193,6 @@ function Admin() {
                         {user.email && user.email !== 'Not available' && (
                           <span className="time-user-email">{user.email}</span>
                         )}
-                      </div>
-                      <div className="time-user-source-badge">
-                        {user.source}
                       </div>
                     </div>
                   ))}
@@ -1230,27 +1264,6 @@ function Admin() {
               ))}
             </div>
             <button onClick={() => setShowLogModal(false)} className="btn-secondary">
-              Close
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* App Users Modal */}
-      {showAppUsersModal && (
-        <div className="modal-overlay" onClick={() => setShowAppUsersModal(false)}>
-          <div className="modal-content users-modal" onClick={(e) => e.stopPropagation()}>
-            <h3>App Registered Users</h3>
-            <div className="modal-scrollable">
-              {appUsers.map((user) => (
-                <div key={user.id} className="activity-card users-card">
-                  <p className="activity-text"><strong>{user.name}</strong></p>
-                  <span className="activity-date">{user.createdAt}</span>
-                  <div className="activity-subtext">{user.email}</div>
-                </div>
-              ))}
-            </div>
-            <button onClick={() => setShowAppUsersModal(false)} className="btn-secondary">
               Close
             </button>
           </div>
