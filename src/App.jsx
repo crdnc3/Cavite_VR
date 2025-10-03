@@ -25,11 +25,19 @@ import ContentManager from './connman';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase';
 
-// ✅ Protected Route Layout
-const ProtectedRoute = ({ user }) => {
-  if (!user) {
+// ✅ Protected Route with role checking
+const ProtectedRoute = ({ user, allowedPaths }) => {
+  const location = useLocation();
+  const currentPath = location.pathname.toLowerCase();
+
+  // ❌ If not logged in → always go to landing
+  if (!user) return <Navigate to="/" replace />;
+
+  // ❌ If logged in but path not allowed → also go to landing
+  if (!allowedPaths.includes(currentPath)) {
     return <Navigate to="/" replace />;
   }
+
   return <Outlet />;
 };
 
@@ -39,9 +47,16 @@ const AppWrapper = () => {
   const [loading, setLoading] = useState(true);
   const location = useLocation();
 
+  // Simulated role (dapat manggaling sa DB o custom claim sa Firebase)
+  const [role, setRole] = useState('user'); // "user" or "admin"
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
+
+      // 🔑 Example: dito mo i-fetch yung role mula sa DB
+      // setRole(currentUser?.email === 'admin@email.com' ? 'admin' : 'user');
+
       setLoading(false);
     });
     return () => unsubscribe();
@@ -49,56 +64,56 @@ const AppWrapper = () => {
 
   if (loading) return <div>Loading...</div>;
 
-  // ✅ All lowercase para walang conflict
-  const hideNavBarPaths = [
-    '/',
-    '/login',
-    '/register',
-    '/admin',
-    '/users',
-    '/support',
-    '/archive',
-    '/navbar',
-    '/conman',
-    '/content-manager',
-  ];
+  // ✅ Allowed paths depende sa role
+  const userPaths = ['/about', '/faq', '/profile', '/review', '/caviteinfographic'];
+  const adminPaths = ['/admin', '/users', '/support', '/archive', '/conman', '/content-manager'];
 
-  // ✅ Always check lowercase para safe
-  const shouldShowNavBar = !hideNavBarPaths.includes(
-    location.pathname.toLowerCase()
-  );
+  // ✅ NavBar visible only on user pages
+  const hideNavBarPaths = ['/', '/login', '/register', ...adminPaths];
+  const currentPath = location.pathname.toLowerCase();
+  const shouldShowNavBar =
+    userPaths.includes(currentPath) && !hideNavBarPaths.includes(currentPath);
 
   return (
     <>
       {shouldShowNavBar && (
         <NavBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
       )}
+
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        {/* ✅ Protected Routes */}
-        <Route element={<ProtectedRoute user={user} />}>
+        {/* User Protected Routes */}
+        <Route
+          element={<ProtectedRoute user={user} allowedPaths={userPaths} />}
+        >
           <Route path="/about" element={<About />} />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/review/:id" element={<Review />} />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/users" element={<Users />} />
-          <Route path="/support" element={<Support />} />
-          <Route path="/archive" element={<Archive />} />
-          <Route path="/conman" element={<Conman />} />
-          <Route path="/content-manager" element={<ContentManager />} />
           <Route
             path="/caviteinfographic"
             element={<CaviteInfographic searchTerm={searchTerm} />}
           />
         </Route>
 
-        {/* ✅ Catch-all route → balik LandingPage */}
-        <Route path="*" element={<LandingPage />} />
+        {/* Admin Protected Routes */}
+        <Route
+          element={<ProtectedRoute user={user} allowedPaths={adminPaths} />}
+        >
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/users" element={<Users />} />
+          <Route path="/support" element={<Support />} />
+          <Route path="/archive" element={<Archive />} />
+          <Route path="/conman" element={<Conman />} />
+          <Route path="/content-manager" element={<ContentManager />} />
+        </Route>
+
+        {/* ✅ Strict Catch-all → balik LandingPage */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>
   );
