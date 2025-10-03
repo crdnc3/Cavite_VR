@@ -36,46 +36,45 @@ const About = () => {
 
             {/* Inline Info Cards */}
             <section className="inline-cards-section">
-            <div className="cards-container">
-                <div className="info-card">
-                <div className="card-header">
-                    <i className="card-icon fas fa-bullseye"></i>
-                    <h3>Our Mission</h3>
-                    <span className="bottom-star">★</span>
-                </div>
-                <p>
-                    To bring Cavite's rich history to life through interactive VR
-                    experiences, making heritage accessible to students, tourists, and
-                    history enthusiasts worldwide.
-                </p>
-                </div>
+                <div className="cards-container">
+                    <div className="info-card">
+                        <div className="card-header">
+                            <i className="card-icon fas fa-bullseye"></i>
+                            <h3>Our Mission</h3>
+                            <span className="bottom-star">★</span>
+                        </div>
+                        <p>
+                            To bring Cavite's rich history to life through interactive VR
+                            experiences, making heritage accessible to students, tourists, and
+                            history enthusiasts worldwide.
+                        </p>
+                    </div>
 
-                <div className="info-card">
-                <div className="card-header">
-                    <i className="card-icon fas fa-eye"></i>
-                    <h3>Our Vision</h3>
-                    <span className="bottom-star">★</span>
-                </div>
-                <p>
-                    We envision a future where heritage sites are experienced, not just
-                    remembered. Bridging past and present through immersive technology.
-                </p>
-                </div>
+                    <div className="info-card">
+                        <div className="card-header">
+                            <i className="card-icon fas fa-eye"></i>
+                            <h3>Our Vision</h3>
+                            <span className="bottom-star">★</span>
+                        </div>
+                        <p>
+                            We envision a future where heritage sites are experienced, not just
+                            remembered. Bridging past and present through immersive technology.
+                        </p>
+                    </div>
 
-                <div className="info-card">
-                <div className="card-header">
-                    <i className="card-icon fas fa-vr-cardboard"></i>
-                    <h3>What Sets Us Apart</h3>
-                    <span className="bottom-star">★</span>
+                    <div className="info-card">
+                        <div className="card-header">
+                            <i className="card-icon fas fa-vr-cardboard"></i>
+                            <h3>What Sets Us Apart</h3>
+                            <span className="bottom-star">★</span>
+                        </div>
+                        <p>
+                            Dynamic VR experiences that transport users to the past, making
+                            history engaging and memorable unlike traditional static exhibits.
+                        </p>
+                    </div>
                 </div>
-                <p>
-                    Dynamic VR experiences that transport users to the past, making
-                    history engaging and memorable unlike traditional static exhibits.
-                </p>
-                </div>
-            </div>
             </section>
-
 
             {/* Advanced Team Section */}
             <section className="team-section" id="team">
@@ -85,6 +84,7 @@ const About = () => {
                         <p className="team-subtitle">
                             Passionate innovators bringing heritage to life through technology
                         </p>
+                        <p className="hover-reminder">Hover over each member to see more details and click to see their fb page</p>
                     </div>
 
                     <div className="team-layout">
