@@ -178,7 +178,7 @@ const Register = () => {
       <img src={newestlogo} alt="Logo" className="logo-image" />
 
       <div className="register-card">
-        <h1 className="register-title">Welcome</h1>
+        <h1 className="register-title">Welcome!</h1>
         <p className="register-bio">Create your account</p>
 
         {/* Username */}
