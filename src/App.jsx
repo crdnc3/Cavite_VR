@@ -19,7 +19,6 @@ import Users from './Users';
 import Support from './Support';
 import Archive from './archive';
 import CaviteInfographic from './CaviteInfographic';
-import Conman from './conman';
 import ContentManager from './connman';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth, db } from './firebase';
@@ -87,7 +86,7 @@ const AppWrapper = () => {
 
   // ✅ Define allowed paths
   const userPaths = ['/about', '/faq', '/review', '/caviteinfographic'];
-  const adminPaths = ['/admin', '/users', '/support', '/archive', '/conman', '/content-manager'];
+  const adminPaths = ['/admin', '/users', '/support', '/archive', '/content-manager'];
 
   // ✅ Navbar logic
   const hideNavBarPaths = ['/', '/login', '/register', ...adminPaths];
@@ -142,7 +141,6 @@ const AppWrapper = () => {
           <Route path="/users" element={<Users />} />
           <Route path="/support" element={<Support />} />
           <Route path="/archive" element={<Archive />} />
-          <Route path="/conman" element={<Conman />} />
           <Route path="/content-manager" element={<ContentManager />} />
         </Route>
 
