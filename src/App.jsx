@@ -25,15 +25,20 @@ import ContentManager from './connman';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase';
 
-// ✅ Protected Route with role checking
-const ProtectedRoute = ({ user, allowedPaths }) => {
+// ✅ SUPER STRICT Protected Route with ROLE checking
+const ProtectedRoute = ({ user, allowedPaths, role, requiredRole }) => {
   const location = useLocation();
   const currentPath = location.pathname.toLowerCase();
 
-  // ❌ If not logged in → always go to landing
+  // ❌ If not logged in
   if (!user) return <Navigate to="/" replace />;
 
-  // ❌ If logged in but path not allowed → also go to landing
+  // ❌ If wrong role (e.g., user trying to access admin)
+  if (requiredRole && role !== requiredRole) {
+    return <Navigate to="/" replace />;
+  }
+
+  // ❌ If logged in but path not allowed for this role
   if (!allowedPaths.includes(currentPath)) {
     return <Navigate to="/" replace />;
   }
@@ -45,17 +50,24 @@ const AppWrapper = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [role, setRole] = useState(null); // ✅ Start as null (not known yet)
   const location = useLocation();
 
-  // Simulated role (dapat manggaling sa DB o custom claim sa Firebase)
-  const [role, setRole] = useState('user'); // "user" or "admin"
-
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
 
-      // 🔑 Example: dito mo i-fetch yung role mula sa DB
-      // setRole(currentUser?.email === 'admin@email.com' ? 'admin' : 'user');
+      if (currentUser) {
+        // 🔐 Example role checking logic
+        // Replace with Firestore fetch if you store roles there
+        if (currentUser.email === 'admin@email.com') {
+          setRole('admin');
+        } else {
+          setRole('user');
+        }
+      } else {
+        setRole(null);
+      }
 
       setLoading(false);
     });
@@ -64,11 +76,11 @@ const AppWrapper = () => {
 
   if (loading) return <div>Loading...</div>;
 
-  // ✅ Allowed paths depende sa role
+  // ✅ Allowed paths per role
   const userPaths = ['/about', '/faq', '/profile', '/review', '/caviteinfographic'];
   const adminPaths = ['/admin', '/users', '/support', '/archive', '/conman', '/content-manager'];
 
-  // ✅ NavBar visible only on user pages
+  // ✅ NavBar visible only for user pages
   const hideNavBarPaths = ['/', '/login', '/register', ...adminPaths];
   const currentPath = location.pathname.toLowerCase();
   const shouldShowNavBar =
@@ -88,7 +100,14 @@ const AppWrapper = () => {
 
         {/* User Protected Routes */}
         <Route
-          element={<ProtectedRoute user={user} allowedPaths={userPaths} />}
+          element={
+            <ProtectedRoute
+              user={user}
+              allowedPaths={userPaths}
+              role={role}
+              requiredRole="user"
+            />
+          }
         >
           <Route path="/about" element={<About />} />
           <Route path="/faq" element={<FAQ />} />
@@ -102,7 +121,14 @@ const AppWrapper = () => {
 
         {/* Admin Protected Routes */}
         <Route
-          element={<ProtectedRoute user={user} allowedPaths={adminPaths} />}
+          element={
+            <ProtectedRoute
+              user={user}
+              allowedPaths={adminPaths}
+              role={role}
+              requiredRole="admin"
+            />
+          }
         >
           <Route path="/admin" element={<Admin />} />
           <Route path="/users" element={<Users />} />
