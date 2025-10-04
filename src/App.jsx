@@ -12,7 +12,6 @@ import Register from './register';
 import LandingPage from './landingpage';
 import About from './about';
 import FAQ from './faq';
-import Profile from './profile';
 import NavBar from './navbar';
 import Review from './review';
 import Admin from './Admin';
@@ -23,22 +22,23 @@ import CaviteInfographic from './CaviteInfographic';
 import Conman from './conman';
 import ContentManager from './connman';
 import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from './firebase';
+import { auth, db } from './firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
-// ✅ SUPER STRICT Protected Route with ROLE checking
+// ✅ Protected Route (strict + role-based)
 const ProtectedRoute = ({ user, allowedPaths, role, requiredRole }) => {
   const location = useLocation();
   const currentPath = location.pathname.toLowerCase();
 
-  // ❌ If not logged in
+  // ❌ Not logged in → redirect
   if (!user) return <Navigate to="/" replace />;
 
-  // ❌ If wrong role (e.g., user trying to access admin)
-  if (requiredRole && role !== requiredRole) {
+  // ❌ Wrong role → redirect
+  if (requiredRole && role?.toLowerCase() !== requiredRole.toLowerCase()) {
     return <Navigate to="/" replace />;
   }
 
-  // ❌ If logged in but path not allowed for this role
+  // ❌ Logged in but trying to access disallowed path
   if (!allowedPaths.includes(currentPath)) {
     return <Navigate to="/" replace />;
   }
@@ -50,7 +50,7 @@ const AppWrapper = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [role, setRole] = useState(null); // ✅ Start as null (not known yet)
+  const [role, setRole] = useState(null);
   const location = useLocation();
 
   useEffect(() => {
@@ -58,11 +58,19 @@ const AppWrapper = () => {
       setUser(currentUser);
 
       if (currentUser) {
-        // 🔐 Example role checking logic
-        // Replace with Firestore fetch if you store roles there
-        if (currentUser.email === 'admin@email.com') {
-          setRole('admin');
-        } else {
+        try {
+          // ✅ Fetch role from Firestore (users collection)
+          const userRef = doc(db, 'users', currentUser.uid);
+          const userSnap = await getDoc(userRef);
+
+          if (userSnap.exists()) {
+            const userData = userSnap.data();
+            setRole(userData.role || 'user'); // default to 'user' if role missing
+          } else {
+            setRole('user');
+          }
+        } catch (error) {
+          console.error('Error fetching user role:', error);
           setRole('user');
         }
       } else {
@@ -71,16 +79,17 @@ const AppWrapper = () => {
 
       setLoading(false);
     });
+
     return () => unsubscribe();
   }, []);
 
   if (loading) return <div>Loading...</div>;
 
-  // ✅ Allowed paths per role
-  const userPaths = ['/about', '/faq', '/profile', '/review', '/caviteinfographic'];
+  // ✅ Define allowed paths
+  const userPaths = ['/about', '/faq', '/review', '/caviteinfographic'];
   const adminPaths = ['/admin', '/users', '/support', '/archive', '/conman', '/content-manager'];
 
-  // ✅ NavBar visible only for user pages
+  // ✅ Navbar logic
   const hideNavBarPaths = ['/', '/login', '/register', ...adminPaths];
   const currentPath = location.pathname.toLowerCase();
   const shouldShowNavBar =
@@ -111,7 +120,6 @@ const AppWrapper = () => {
         >
           <Route path="/about" element={<About />} />
           <Route path="/faq" element={<FAQ />} />
-          <Route path="/profile" element={<Profile />} />
           <Route path="/review/:id" element={<Review />} />
           <Route
             path="/caviteinfographic"
@@ -138,19 +146,17 @@ const AppWrapper = () => {
           <Route path="/content-manager" element={<ContentManager />} />
         </Route>
 
-        {/* ✅ Strict Catch-all → balik LandingPage */}
+        {/* Catch-all → LandingPage */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>
   );
 };
 
-const App = () => {
-  return (
-    <Router>
-      <AppWrapper />
-    </Router>
-  );
-};
+const App = () => (
+  <Router>
+    <AppWrapper />
+  </Router>
+);
 
 export default App;
