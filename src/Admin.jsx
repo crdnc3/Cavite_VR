@@ -857,49 +857,99 @@ function Admin() {
         <div className="charts-container">
           <div className="chart-card">
             <div className="chart-header">
-              <h3>Historic Sites Analytics</h3>
+              <h3>Historic Sites Visits</h3>
               {isLoadingLandmarks && (
                 <span className="loading-indicator">Loading...</span>
               )}
             </div>
-        <ResponsiveContainer width="100%" height={200}>
-          <BarChart data={landmarksData} margin={{ top: 20, right: 20, left: 0, bottom: 10 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis
-                dataKey="name"
-                tickFormatter={(value) => value.length > 10 ? value.slice(0, 10) + '…' : value}
-              />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="views" fill="#495057" />
-          </BarChart>
-        </ResponsiveContainer>
 
-            
-            <div className="landmarks-details">
-              <h4>Site Details:</h4>
-              {landmarksData.length > 0 ? (
-                <div className="landmarks-grid">
-                  {landmarksData.map((landmark) => (
-                    <div key={landmark.id} className="landmark-item">
-                      <strong>{landmark.name}</strong>
-                      <br />
-                      <span className="views-count">Views: {landmark.views}</span>
-                      {landmark.location && (
-                        <>
-                          <br />
-                          <small>Location: {landmark.location}</small>
-                        </>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="no-data">No landmarks data available.</p>
-              )}
-            </div>
+            <ResponsiveContainer width="100%" height={300}>
+  <BarChart
+    data={landmarksData}
+    barCategoryGap="20%"
+    margin={{ top: 20, right: 30, left: 0, bottom: 10 }}
+  >
+    <defs>
+      {/* Elegant gold gradient */}
+      <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stopColor="#fcd34d" />   {/* Light gold */}
+        <stop offset="100%" stopColor="#f59e0b" /> {/* Deep golden amber */}
+      </linearGradient>
+
+      {/* Soft glowing shadow */}
+      <filter id="shadowGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feDropShadow dx="0" dy="4" stdDeviation="6" floodColor="#facc15" floodOpacity="0.5" />
+      </filter>
+    </defs>
+
+    <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" />
+
+    <XAxis
+      dataKey="name"
+      tickFormatter={(value) => (value.length > 10 ? value.slice(0, 10) + '…' : value)}
+      tick={{ fill: '#b45309', fontSize: 12, fontWeight: 500 }}
+      tickLine={false}
+      axisLine={{ stroke: '#fcd34d', strokeWidth: 1 }}
+    />
+
+    <YAxis
+      tick={{ fill: '#b45309', fontSize: 12 }}
+      axisLine={{ stroke: '#fcd34d', strokeWidth: 1 }}
+      tickLine={false}
+    />
+
+    <Tooltip
+      cursor={{ fill: 'rgba(251, 191, 36, 0.08)' }}
+      contentStyle={{
+        background: 'rgba(255, 248, 220, 0.9)',
+        backdropFilter: 'blur(8px)',
+        border: '1px solid rgba(250, 204, 21, 0.5)',
+        borderRadius: '10px',
+        color: '#78350f',
+        fontWeight: 500,
+      }}
+    />
+
+    <Bar
+      dataKey="views"
+      fill="url(#barGradient)"
+      radius={[30, 30, 30, 30]}
+      style={{ filter: 'url(#shadowGlow)', transformOrigin: 'bottom' }}
+      animationBegin={0}
+      animationDuration={1500}
+      animationEasing="ease-out"
+      isAnimationActive={true}
+    />
+  </BarChart>
+</ResponsiveContainer>
+
+<div className="landmarks-details">
+  <div className="details-header">
+    <h4>Site Details</h4>
+    <div className="divider" />
+  </div>
+
+  {landmarksData.length > 0 ? (
+    <div className="landmarks-grid">
+      {landmarksData.map((landmark) => (
+        <div key={landmark.id} className="landmark-card">
+          <div className="landmark-header">
+            <h5 className="landmark-name">{landmark.name}</h5>
           </div>
-
+          <div className="landmark-info">
+            <p className="views-count">Visits: {landmark.views}</p>
+            {landmark.location && (
+              <p className="location">Location: {landmark.location}</p>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  ) : (
+    <p className="no-data">No landmarks data available.</p>
+  )}
+</div>
+</div>
           <div className="chart-card">
             <div className="chart-header">
               <h3>Regional User Distribution</h3>
@@ -910,27 +960,103 @@ function Admin() {
                 Print Statistics
               </button>
             </div>
-            <ResponsiveContainer width="100%" height={200}>
-              <BarChart data={placeDistribution}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis
-                dataKey="name"
-                tickFormatter={(value) => value.length > 10 ? value.slice(0, 10) + '…' : value}
-                />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="value" fill="#495057">
-                  {placeDistribution.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
 
-            <div className="users-by-place-container">
+  <ResponsiveContainer width="100%" height={200}>
+  <BarChart
+    data={placeDistribution}
+    barCategoryGap="20%"
+    margin={{ top: 20, right: 30, left: 0, bottom: 10 }}
+  >
+    <defs>
+      {/* Smooth red gradient */}
+      <linearGradient id="redGradient" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stopColor="#f87171" />  {/* Light coral red */}
+        <stop offset="100%" stopColor="#b91c1c" /> {/* Deep crimson */}
+      </linearGradient>
+
+      {/* Soft glowing red shadow */}
+      <filter id="redGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feDropShadow dx="0" dy="4" stdDeviation="6" floodColor="#ef4444" floodOpacity="0.5" />
+      </filter>
+    </defs>
+
+    <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" />
+
+    <XAxis
+      dataKey="name"
+      tickFormatter={(value) => (value.length > 10 ? value.slice(0, 10) + '…' : value)}
+      tick={{ fill: '#7f1d1d', fontSize: 12, fontWeight: 500 }}
+      tickLine={false}
+      axisLine={{ stroke: '#f87171', strokeWidth: 1 }}
+    />
+
+    <YAxis
+      tick={{ fill: '#7f1d1d', fontSize: 12 }}
+      axisLine={{ stroke: '#f87171', strokeWidth: 1 }}
+      tickLine={false}
+    />
+
+    <Tooltip
+      cursor={{ fill: 'rgba(239,68,68,0.08)' }}
+      contentStyle={{
+        background: 'rgba(255, 235, 235, 0.9)',
+        backdropFilter: 'blur(8px)',
+        border: '1px solid rgba(239,68,68,0.4)',
+        borderRadius: '10px',
+        color: '#7f1d1d',
+        fontWeight: 500,
+      }}
+    />
+
+    <Legend
+      verticalAlign="top"
+      iconType="circle"
+      wrapperStyle={{
+        fontSize: '12px',
+        color: '#7f1d1d',
+        marginBottom: '10px',
+      }}
+    />
+
+    <Bar
+      dataKey="value"
+      fill="url(#redGradient)"
+      radius={[30, 30, 30, 30]}
+      style={{ filter: 'url(#redGlow)', transformOrigin: 'bottom' }}
+      animationBegin={0}
+      animationDuration={1500}
+      animationEasing="ease-out"
+      isAnimationActive={true}
+    >
+      {placeDistribution.map((entry, index) => (
+        <Cell key={`cell-${index}`} fill={`url(#redGradient)`} />
+      ))}
+    </Bar>
+  </BarChart>
+</ResponsiveContainer>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div className="users-by-place-container">
   {Object.entries(usersByPlace).map(([region, users]) => {
-    // dito ka puwede magdeclare ng const
     const itemsPerPage = 10;
     const page = pageByRegion[region] || 0;
     const start = page * itemsPerPage;
@@ -939,22 +1065,24 @@ function Admin() {
 
     return (
       <div key={region} className="place-card">
-        <h4>
-          <span className="region">{region}</span>
+        <div className="place-card-header">
+          <h4 className="region">{region}</h4>
           <span className="count">
             {users.length} user{users.length > 1 ? 's' : ''}
           </span>
-        </h4>
+        </div>
+
         <ul className="place-users-list">
           {currentUsers.map((user, i) => (
-            <li key={i}>
-              {user.name} – {user.place}
+            <li key={i} className="user-item">
+              <span className="user-name">{user.name}</span>
+              <span className="user-place">{user.place}</span>
             </li>
           ))}
         </ul>
 
         {users.length > itemsPerPage && (
-          <div className="pagination flex justify-between items-center mt-3">
+          <div className="pagination">
             <button
               onClick={() =>
                 setPageByRegion(prev => ({
@@ -963,12 +1091,12 @@ function Admin() {
                 }))
               }
               disabled={page === 0}
-              className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+              className="page-btn prev"
             >
               Prev
             </button>
 
-            <span className="text-sm text-gray-600">
+            <span className="page-info">
               Page {page + 1} of {totalPages}
             </span>
 
@@ -983,7 +1111,7 @@ function Admin() {
                 }))
               }
               disabled={page + 1 >= totalPages}
-              className="px-3 py-1 bg-blue-500 text-white rounded disabled:opacity-50"
+              className="page-btn next"
             >
               Next
             </button>
@@ -993,6 +1121,17 @@ function Admin() {
     );
   })}
 </div>
+
+
+
+
+
+
+
+
+
+
+
           </div>
         </div>
       </div>
@@ -1074,7 +1213,7 @@ function Admin() {
               </button>
               <button 
                 onClick={handlePrint}
-                className="btn-primary"
+                className="gen-rprt"
                 disabled={printTimeFilter === 'custom' && (!printCustomStartDate || !printCustomEndDate)}
               >
                 Generate Report
