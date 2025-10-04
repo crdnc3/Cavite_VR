@@ -52,13 +52,41 @@ const FAQ = () => {
                             )}
                         </div>
 
-                        <div className="contact-info">
-                            For more inquiries contact us via email: cavitevr221@gmail.com
-                        </div>
-                    </div>
+                        {/* 🔹 NEW QUESTIONS BELOW 🔹 */}
 
-                    <div className="faq-image">
-                        <img src="src/assets/images/faq.png" alt="FAQ" />
+                        <div className={`faq-item ${openQuestion === 4 ? 'open' : ''}`} onClick={() => toggleQuestion(4)}>
+                            <div className="faq-question">What is the CaviteVR website?</div>
+                            {openQuestion === 4 && (
+                                <div className="faq-answer">
+                                    The CaviteVR website primarily provides graphical content and historical information about Cavite’s heritage sites.
+                                    To fully experience the project in virtual reality, users are encouraged to download the CaviteVR mobile application.
+                                </div>
+                            )}
+                        </div>
+
+                        <div className={`faq-item ${openQuestion === 5 ? 'open' : ''}`} onClick={() => toggleQuestion(5)}>
+                            <div className="faq-question">What hardware do I need to use?</div>
+                            {openQuestion === 5 && (
+                                <div className="faq-answer">
+                                    To explore CaviteVR in virtual reality, you must first download the CaviteVR mobile application.
+                                    A VR headset (compatible with your mobile device) and a controller are also required to navigate and interact within the virtual environment.
+                                </div>
+                            )}
+                        </div>
+
+                        <div className={`faq-item ${openQuestion === 6 ? 'open' : ''}`} onClick={() => toggleQuestion(6)}>
+                            <div className="faq-question">Is the CaviteVR application compatible with any device?</div>
+                            {openQuestion === 6 && (
+                                <div className="faq-answer">
+                                    At present, the CaviteVR application is only supported on Android devices.
+                                    It requires a minimum operating system of Android 13 (Tiramisu) and is compatible with all subsequent versions up to the latest release.
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="contact-info">
+                            For more inquiries contact us via email: <b>cavitevr221@gmail.com</b>
+                        </div>
                     </div>
                 </div>
             </div>

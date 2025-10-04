@@ -1,4 +1,4 @@
-/* Content Manager - Clean & Sleek Design */
+/* Content Manager - Clean & Organized */
 
 /* === RESET & BASE === */
 * {
@@ -49,30 +49,53 @@ body {
     font-size: 16px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    padding: 0;
+    overflow: auto; /* Allow scrolling for the entire body */
 }
 
 /* === MAIN LAYOUT === */
 .connman-page {
     display: flex;
-    background-color: #e3e0e0;
     min-height: 100vh;
-    background: var(--light-gray);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: #e3e0e0;
+    overflow-y: auto; /* Enables vertical scrolling */
+    overflow-x: hidden; /* Prevents unwanted horizontal scroll */
 }
+
 
 .conman-content {
     flex: 1;
     padding: var(--spacing-xl);
     overflow-y: auto;
+    margin-left: 250px;
+    background: #e3e0e0;
+    height: 100vh
 }
 
 .content-manager {
-    max-width: 1200px;
+    max-width: 2000px;
     margin: 0 auto;
     background: var(--white);
     padding: var(--spacing-xl);
     border-radius: var(--border-radius-lg);
     box-shadow: var(--shadow-sm);
+}
+
+/* === SIDEBAR === */
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 250px;
+    height: 100vh;
+    background-color: #0033cc;
+    color: #fff;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 100;
 }
 
 /* === HEADER === */
@@ -452,6 +475,7 @@ body {
     display: flex;
     gap: var(--spacing-sm);
     flex-wrap: wrap;
+    margin-bottom: var(--spacing-md);
 }
 
 .tag {
@@ -488,6 +512,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 32px;
+    height: 32px;
 }
 
 .edit-button {
@@ -517,40 +543,41 @@ body {
     line-height: 1.6;
     margin-bottom: var(--spacing-md);
 }
+
 .connman-item-transport {
-    margin: 8px 0;
+    margin: var(--spacing-sm) 0;
     padding-left: 20px;
-    list-style-type: disc; /* bullets */
+    list-style-type: disc;
     color: #555;
     font-size: 0.95rem;
     line-height: 1.5;
-  }
-  
-  .connman-item-transport li {
+}
+
+.connman-item-transport li {
     margin-bottom: 4px;
-  }
-  
+}
+
 /* === IMAGE GALLERY === */
 .image-gallery {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 images per row */
-    gap: 4px; /* very close together */
-    margin-top: 4px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+    margin-top: var(--spacing-sm);
 }
 
 .item-image {
-    width: 100%;        /* fills the grid cell */
-    height: 120px;      /* adjust as needed */
+    width: 100%;
+    height: 120px;
     object-fit: cover;
     border-radius: var(--border-radius);
     border: 1px solid var(--medium-gray);
     transition: var(--transition);
 }
 
-
 .item-image:hover {
     border-color: var(--primary-blue);
     transform: scale(1.02);
+    box-shadow: var(--shadow-sm);
 }
 
 /* === LOADING STATE === */
@@ -582,7 +609,7 @@ select:invalid:focus {
 input:valid,
 textarea:valid,
 select:valid {
-    border-color: #0038a8;
+    border-color: var(--border-gray);
 }
 
 /* === UTILITY CLASSES === */
@@ -592,6 +619,16 @@ select:valid {
 .mr-1 { margin-right: var(--spacing-xs); }
 
 /* === RESPONSIVE DESIGN === */
+@media (max-width: 1024px) {
+    .conman-content {
+        margin-left: 0;
+    }
+    
+    .sidebar {
+        transform: translateX(-100%);
+    }
+}
+
 @media (max-width: 768px) {
     .content-manager {
         padding: var(--spacing-md);
@@ -617,13 +654,18 @@ select:valid {
         flex-direction: column;
     }
     
+    .btn-cancel,
+    .btn-submit {
+        width: 100%;
+    }
+    
     .connman-item-header {
         flex-direction: column;
         gap: var(--spacing-md);
     }
     
     .connman-item-actions {
-        align-self: flex-end;
+        align-self: flex-start;
     }
     
     .form-container {
@@ -633,15 +675,23 @@ select:valid {
     .form-input,
     .form-select,
     .form-textarea {
-        font-size: 16px; /* Prevents zoom on iOS */
+        font-size: 16px;
     }
 
     .image-preview-container {
         grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     }
+    
+    .image-gallery {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 @media (max-width: 480px) {
+    .conman-content {
+        padding: var(--spacing-md);
+    }
+    
     .content-manager {
         padding: var(--spacing-sm);
     }
@@ -661,9 +711,13 @@ select:valid {
     .image-preview-container {
         grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
     }
+    
+    .image-gallery {
+        grid-template-columns: 1fr;
+    }
 }
 
-/* === ACCESSIBILITY FEATURES === */
+/* === ACCESSIBILITY === */
 @media (prefers-contrast: high) {
     .form-input,
     .form-select,
@@ -684,7 +738,8 @@ select:valid {
 .form-select:focus-visible,
 .form-textarea:focus-visible,
 .btn-submit:focus-visible,
-.btn-cancel:focus-visible {
+.btn-cancel:focus-visible,
+.action-button:focus-visible {
     outline: 2px solid var(--focus-blue);
     outline-offset: 2px;
 }
