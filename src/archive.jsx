@@ -109,6 +109,7 @@ function Archive() {
     }
 
     // Sort
+    filtered = [...filtered]; // create a new array to avoid in-place mutation
     filtered.sort((a, b) => {
       if (sortOption === 'newest') return b.createdAt - a.createdAt;
       if (sortOption === 'oldest') return a.createdAt - b.createdAt;
