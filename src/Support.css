@@ -18,6 +18,27 @@
   color: #000000;
 }
 
+.copy-btn {
+  background: #f0f0f0;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.copy-btn:hover {
+  background: #d1e7ff;
+  color: #0d6efd;
+}
+
+.copy-btn i {
+  pointer-events: none;
+}
+
 .support-description {
   margin-bottom: 2rem;
   color: #000000;
@@ -59,3 +80,4 @@
 .contact-card a:hover {
   text-decoration: underline;
 }
+

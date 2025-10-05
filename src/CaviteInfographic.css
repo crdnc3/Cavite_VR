@@ -863,8 +863,8 @@
 
 .error-message {
   color: var(--ph-red);
-  font-size: 1.125rem;
   font-weight: 500;
+    font-size: 0.9rem;
 }
 
 .retry-button {

@@ -120,35 +120,35 @@ const Login = () => {
             onKeyDown={handleKeyDown}
           />
           <label className="floating-label">Email</label>
-          {emailError && <p className="error-message">{emailError}</p>}
+          {emailError && <p className="error-email">{emailError}</p>}
         </div>
 
         {/* Password input with toggle */}
         <div className="input-container password-container">
-          <input
-            type={showPassword ? 'text' : 'password'}
-            placeholder=" "
-            className="login-input password"
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-              setPasswordError('');
-            }}
-            onKeyDown={handleKeyDown}
-          />
-          <label className="floating-label">Password</label>
+  <input
+    type={showPassword ? 'text' : 'password'}
+    placeholder=" "
+    className="login-input password"
+    value={password}
+    onChange={(e) => {
+      setPassword(e.target.value);
+      setPasswordError('');
+    }}
+    onKeyDown={handleKeyDown}
+  />
+  <label className="floating-label">Password</label>
 
-          {/* 👇 toggle button inside input */}
-          <button
-            type="button"
-            className="toggle-password"
-            onClick={() => setShowPassword(!showPassword)}
-          >
-            {showPassword ? '🙈' : '👁️'}
-          </button>
+  <button
+    type="button"
+    className="toggle-password"
+    onClick={() => setShowPassword(!showPassword)}
+  >
+    <i className={showPassword ? "fas fa-eye-slash" : "fas fa-eye"}></i>
+  </button>
 
-          {passwordError && <p className="error-message">{passwordError}</p>}
-        </div>
+  {passwordError && <p className="err">{passwordError}</p>}
+</div>
+
 
         <button className="login-forgot" onClick={handleForgotPassword}>
           Forgot password?
