@@ -174,7 +174,7 @@ html.about {
 
 /* Inline Cards Section */
 .inline-cards-section {
-  padding: 4rem 2rem;
+  padding: 2rem 2rem;
   background: linear-gradient(135deg, #ffffff, #ffffff);
 }
 
@@ -185,7 +185,6 @@ html.about {
 }
 
 .info-card {
-  top: 100px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
@@ -286,6 +285,358 @@ html.about {
   color:  #0038a8;
   margin: 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Carousel Section */
+/* Carousel Section */
+.carousel-section {
+  padding: 100px 20px;
+  background: linear-gradient(135deg, #1a365d 0%, #2b6cb0 50%, #1a365d 100%);
+  position: relative;
+  overflow: hidden;
+  min-height: 110vh; /* mas mahaba sa screen */
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.carousel-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: 
+      radial-gradient(circle at 15% 25%, rgba(255, 215, 0, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(220, 20, 60, 0.06) 0%, transparent 50%),
+      radial-gradient(circle at 50% 50%, rgba(10, 40, 120, 0.05) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.carousel-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+/* Header */
+.carousel-header {
+  text-align: center;
+  margin-bottom: 70px;
+  animation: fadeInDown 0.8s ease-out;
+  transform: translateY(30px); /* ← ibaba ng 30px */
+}
+
+.carousel-header h2 {
+  font-size: 3rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  position: relative;
+  display: inline-block;
+  background: linear-gradient(135deg, var(--ph-white) 0%, var(--ph-gold-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 0 25px rgba(255, 215, 0, 0.3);
+  margin-bottom: 15px;
+}
+
+.carousel-header h2::after {
+  content: '';
+  position: absolute;
+  transform: translateY(-15px); /* ← ibaba ng 30px */
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(100deg,#ff000037, #ff00007a, #ff0000, #ff00007a, #ff000037);
+}
+
+.carousel-subtitle {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.85);
+  max-width: 700px;
+  margin: 25px auto 0;
+  transform: translateY(-15px); /* ← ibaba ng 30px */
+  line-height: 1.6;
+}
+
+/* Carousel Core */
+.carousel-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 500px;
+  perspective: 1200px;
+}
+
+.carousel-track {
+  position: relative;
+  width: 100%;
+  height: 450px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.carousel-slide {
+  position: absolute;
+  width: 600px;
+  height: 400px;
+  opacity: 0;
+  transform: translateX(0) scale(0.8) rotateY(0deg);
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px #ff0000;
+}
+
+.carousel-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 20px;
+}
+
+.carousel-slide.active {
+  opacity: 1;
+  transform: translateX(0) scale(1) rotateY(0deg);
+  z-index: 3;
+  pointer-events: auto;
+  box-shadow:
+    0 40px 100px #00000066,
+    0 0 0 3px rgba(255, 215, 0, 0.4);
+}
+
+.carousel-slide.prev {
+  opacity: 0.4;
+  transform: translateX(-450px) scale(0.75) rotateY(15deg);
+  z-index: 2;
+  filter: brightness(0.7);
+}
+
+.carousel-slide.next {
+  opacity: 0.4;
+  transform: translateX(450px) scale(0.75) rotateY(-15deg);
+  z-index: 2;
+  filter: brightness(0.7);
+}
+
+/* Caption */
+.slide-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 25px;
+  background: linear-gradient(to top, #720606d7, transparent);
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-align: center;
+  transform: translateY(100%);
+  transition: transform 0.4s ease;
+  letter-spacing: 1px;
+}
+
+.carousel-slide.active .slide-caption {
+  transform: translateY(0);
+}
+
+/* Buttons */
+  .crsl-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.7);
+    border: none;
+    color: var(--ph-white);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+    z-index: 10;
+}
+
+.crsl-btn:hover {
+  background: rgba(0, 0, 0, 0.9);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.pre-btn {
+  left: 50px;
+}
+
+.nex-btn {
+  right: 50px;
+}
+
+/* Indicators */
+.carousel-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 50px;
+  animation: fadeInUp 0.8s ease-out 0.3s both;
+}
+
+.indicator {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  border: 2px solid rgba(255, 215, 0, 0.4);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.indicator:hover {
+  background: rgba(255, 215, 0, 0.7);
+  transform: scale(1.2);
+}
+
+.indicator.active {
+  background: #ffd700;
+  width: 40px;
+  border-radius: 6px;
+  border-color: #ff0000;
+}
+
+/* Animations */
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .carousel-header h2 {
+    font-size: 2rem;
+  }
+  .carousel-subtitle {
+    font-size: 1rem;
+  }
+  .carousel-slide {
+    width: 350px;
+    height: 280px;
+  }
+  .crsl-btn {
+    width: 45px;
+    height: 45px;
+    font-size: 1rem;
+  }
+  .prev-btn { left: 10px; }
+  .next-btn { right: 10px; }
+  .indicator.active { width: 30px; }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* Enhanced Team Section with Beautiful Hover Effects */
 .team-section {
