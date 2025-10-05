@@ -237,7 +237,7 @@ function Users() {
               onClick={() => window.location.reload()}
               title="Refresh users"
             >
-              🔄
+            <i className="fas fa-sync-alt"></i>
             </button>
           </div>
         </div>
@@ -393,8 +393,7 @@ function Users() {
                       </td>
                       <td>
                         <div className="email-cell">
-                          <span>📧</span>
-                          {user.email || 'No email'}
+                        <i className="fas fa-envelope"></i> {user.email || 'No email'}
                         </div>
                       </td>
                       <td>
@@ -415,20 +414,17 @@ function Users() {
                       </td>
                       <td>
                         <div className="location-cell">
-                          <span>📍</span>
-                          {user.place || '—'}
+                        <i className="fas fa-map-marker-alt"></i> {user.place || '—'}
                         </div>
                       </td>
                       <td>
                         <div className="region-cell">
-                          <span>🌍</span>
-                          {user.region || '—'}
+                        <i className="fas fa-globe"></i> {user.region || '—'}
                         </div>
                       </td>
                       <td>
                         <div className="date-cell">
-                          <span>📅</span>
-                          {joinedDate}
+                        <i className="fas fa-calendar-alt"></i> {joinedDate}
                         </div>
                       </td>
                       <td>
