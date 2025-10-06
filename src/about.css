@@ -344,7 +344,7 @@ html.about {
   background: linear-gradient(135deg, #1a365d 0%, #2b6cb0 50%, #1a365d 100%);
   position: relative;
   overflow: hidden;
-  min-height: 110vh; /* mas mahaba sa screen */
+  min-height: 120vh; /* mas mahaba sa screen */
 
   display: flex;
   flex-direction: column;
@@ -640,7 +640,7 @@ html.about {
 
 /* Enhanced Team Section with Beautiful Hover Effects */
 .team-section {
-  padding: 4rem 0;
+  min-height: 120vh;
   background: linear-gradient(135deg, #f8fafc 0%, #ffffff 50%, #f1f5f9 100%);
   border-top: 1px solid var(--border-light);
   position: relative;

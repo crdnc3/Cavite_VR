@@ -514,13 +514,13 @@ function Users() {
         </div>
 
         {showDeleteModal && (
-          <div className="modal-overlay">
-            <div className="modal-content">
+          <div className="del-modal-overlay">
+            <div className="del-modal-content">
               <h3>Confirm Delete</h3>
               <p>Are you sure you want to delete this user? This action cannot be undone.</p>
-              <div className="modal-actions">
-                <button onClick={confirmDelete} className="confirm-btn">Yes, Delete</button>
-                <button onClick={() => setShowDeleteModal(false)} className="cancel-btn">Cancel</button>
+              <div className="del-modal-actions">
+                <button onClick={confirmDelete} className="ucnfrm-btn">Yes, Delete</button>
+                <button onClick={() => setShowDeleteModal(false)} className="ucncl-btn">Cancel</button>
               </div>
             </div>
           </div>

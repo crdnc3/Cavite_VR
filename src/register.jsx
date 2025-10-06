@@ -1,10 +1,9 @@
-// src/Register.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { registerUser } from './firebaseAuth';
 import { db } from './firebase';
 import { doc, collection, addDoc, setDoc } from 'firebase/firestore';
-import { sendEmailVerification } from 'firebase/auth'; // ✅ Import ito
+import { sendEmailVerification } from 'firebase/auth';
 import './register.css';
 import newestlogo from './assets/images/newestlogo.png';
 import newerbg from './assets/images/newerbg.png';
@@ -48,7 +47,7 @@ const regionPlaces = {
 const Register = () => {
   const navigate = useNavigate();
 
-  // Form fields
+  // Form states
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -57,30 +56,45 @@ const Register = () => {
   const [places, setPlaces] = useState([]);
   const [selectedPlace, setSelectedPlace] = useState('');
 
-  // Errors & feedback
+  // Errors
   const [usernameError, setUsernameError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const [regionError, setRegionError] = useState('');
   const [placeError, setPlaceError] = useState('');
-  const [passwordStrength, setPasswordStrength] = useState('');
+  const [passwordStrengthMessage, setPasswordStrengthMessage] = useState('');
 
-  // Helpers
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-  const checkPasswordStrength = (password) => {
-    if (password.length < 6) return 'Weak';
-    else if (password.length < 10) return 'Medium';
-    else return 'Strong';
+  // ✅ STRONG PASSWORD CHECK
+  const validateStrongPassword = (password) => {
+    const lengthCheck = password.length >= 8;
+    const upperCheck = /[A-Z]/.test(password);
+    const lowerCheck = /[a-z]/.test(password);
+    const numberCheck = /\d/.test(password);
+    const specialCheck = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+    if (!lengthCheck)
+      return "Password must be at least 8 characters long.";
+    if (!upperCheck)
+      return "Password must contain at least one uppercase letter.";
+    if (!lowerCheck)
+      return "Password must contain at least one lowercase letter.";
+    if (!numberCheck)
+      return "Password must contain at least one number.";
+    if (!specialCheck)
+      return "Password must contain at least one special character.";
+
+    return "";
   };
 
-  // Handlers
   const handlePasswordChange = (e) => {
     const newPassword = e.target.value;
     setPassword(newPassword);
-    setPasswordStrength(checkPasswordStrength(newPassword));
     setPasswordError('');
+    const strengthMessage = validateStrongPassword(newPassword);
+    setPasswordStrengthMessage(strengthMessage);
   };
 
   const handleRegionChange = (e) => {
@@ -113,8 +127,9 @@ const Register = () => {
       valid = false;
     } else setEmailError('');
 
-    if (!password) {
-      setPasswordError('Password is required');
+    const passwordValidationMessage = validateStrongPassword(password);
+    if (passwordValidationMessage) {
+      setPasswordError(passwordValidationMessage);
       valid = false;
     } else setPasswordError('');
 
@@ -140,30 +155,26 @@ const Register = () => {
       try {
         const user = await registerUser(email.trim(), password, username.trim());
 
-        // ✅ Send email verification
         if (user && user.email) {
           await sendEmailVerification(user);
         }
 
-        // Log action
         const logsCollectionRef = collection(db, 'users', user.uid, 'logs');
         await addDoc(logsCollectionRef, {
           message: `User ${username.trim()} has created an account`,
           timestamp: new Date(),
         });
 
-        // Save user data
         await setDoc(doc(db, 'users', user.uid), {
           username: username.trim(),
           email: email.trim(),
           region,
           place: selectedPlace,
           createdAt: new Date(),
-          emailVerified: user.emailVerified, // will be false until verified
+          emailVerified: user.emailVerified,
         });
 
-        alert("A verification email has been sent. Please check your inbox (or spam folder) before logging in.");
-
+        alert("A verification email has been sent. Please check your inbox or spam folder before logging in.");
         navigate('/login');
       } catch (error) {
         console.error('Registration error:', error.message);
@@ -224,10 +235,8 @@ const Register = () => {
           />
           <label className="floating-label">Password</label>
           {passwordError && <p className="error-message">{passwordError}</p>}
-          {password && (
-            <p className={`password-strength ${passwordStrength.toLowerCase()}`}>
-              {passwordStrength}
-            </p>
+          {password && !passwordError && passwordStrengthMessage && (
+            <p className="unique-password-hint">{passwordStrengthMessage}</p>
           )}
         </div>
 

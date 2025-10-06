@@ -218,12 +218,27 @@
 }
 
 .cavite-card-icon.treasures {
-  background: linear-gradient(135deg, #1a365d 0%, #1a365d 100%);
+  background: linear-gradient(135deg, rgba(26, 54, 93, 0.8), rgba(58, 106, 175, 0.8)); /* blue gradient with transparency */
+  backdrop-filter: blur(8px); /* frosted glass blur */
+  -webkit-backdrop-filter: blur(8px); /* Safari support */
+  border: 1px solid rgba(255, 255, 255, 0.2); /* soft border to enhance glass look */
+  box-shadow: 0 4px 10px rgba(26, 54, 93, 0.4); /* subtle blue glow */
+  color: #fff;
 }
 
 .cavite-card-icon.landmarks {
-  background: linear-gradient(135deg, var(--ph-red) 0%, var(--ph-red-dark) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(var(--ph-red-rgb, 206, 17, 38), 0.8) 0%,
+    rgba(var(--ph-red-dark-rgb, 168, 14, 31), 0.8) 100%
+  ); /* soft transparent red gradient */
+  backdrop-filter: blur(8px); /* frosted glass blur */
+  -webkit-backdrop-filter: blur(8px); /* Safari support */
+  border: 1px solid rgba(255, 255, 255, 0.25); /* subtle highlight border */
+  box-shadow: 0 4px 10px rgba(168, 14, 31, 0.45); /* soft red glow */
+  color: #fff;
 }
+
 
 .cavite-card-type-badge {
   position: absolute;
@@ -241,11 +256,31 @@
 }
 
 .cavite-card-type-badge.treasures {
-  background: linear-gradient(135deg, #1a365d 0%, #1a365d 100%);
+  background: linear-gradient(135deg, rgba(26, 54, 93, 0.8), rgba(58, 106, 175, 0.8)); /* rich blue glass gradient */
+  backdrop-filter: blur(6px); /* frosted glass blur */
+  -webkit-backdrop-filter: blur(6px); /* Safari support */
+  border: 1px solid rgba(255, 255, 255, 0.25); /* subtle border for glass depth */
+  box-shadow: 0 3px 8px rgba(26, 54, 93, 0.4); /* soft blue glow */
+  color: #ffffff;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 12px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  letter-spacing: 0.3px;
 }
 
 .cavite-card-type-badge.landmarks {
-  background: linear-gradient(135deg, rgba(206, 17, 38, 0.9) 0%, rgba(168, 14, 31, 0.9) 100%);
+  background: linear-gradient(135deg, rgba(206, 17, 38, 0.75), rgba(168, 14, 31, 0.75)); /* deep red glass gradient */
+  backdrop-filter: blur(6px); /* frosted glass effect */
+  -webkit-backdrop-filter: blur(6px); /* Safari support */
+  border: 1px solid rgba(255, 255, 255, 0.25); /* subtle white border for depth */
+  box-shadow: 0 3px 8px rgba(168, 14, 31, 0.4); /* soft red glow */
+  color: #fff;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 12px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  letter-spacing: 0.3px;
 }
 
 .cavite-card-content {

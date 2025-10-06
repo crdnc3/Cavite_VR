@@ -23,6 +23,7 @@ const ContentManager = () => {
   const [editingItem, setEditingItem] = useState(null);
   const [formVisible, setFormVisible] = useState(false);
   const [activeView, setActiveView] = useState("treasures");
+  const [deleteModal, setDeleteModal] = useState({ visible: false, item: null, input: "" });
 
   const [imageInput, setImageInput] = useState("");
 
@@ -35,7 +36,7 @@ const ContentManager = () => {
     type: "",
     category: "",
     coordinates: { lat: "", lng: "" },
-    mapLink: "", // <-- ADD: Map link field
+    mapLink: "",
     details: {
       hours: "",
       fee: "",
@@ -141,15 +142,35 @@ const ContentManager = () => {
     }, 100);
   };
 
-  const handleDelete = async (item) => {
-    if (!confirm("Delete this item?")) return;
+  const handleDelete = (item) => {
+    setDeleteModal({ visible: true, item, input: "" });
+  };
+
+  const confirmDelete = async () => {
+    const { item, input } = deleteModal;
+    
+    if (input.trim() !== item.name.trim()) {
+      toast({
+        title: "Error",
+        description: "Name does not match. Deletion cancelled.",
+      });
+      return;
+    }
+
     try {
       await deleteDoc(doc(db, item.category, item.id));
-      toast({ title: "Deleted", description: "Item deleted successfully" });
+      toast({
+        title: "Deleted",
+        description: `Item "${item.name}" deleted successfully.`,
+      });
       fetchData();
+      setDeleteModal({ visible: false, item: null, input: "" });
     } catch (error) {
       console.error("Error deleting:", error);
-      toast({ title: "Error", description: "Failed to delete item" });
+      toast({
+        title: "Error",
+        description: "Failed to delete item.",
+      });
     }
   };
 
@@ -221,6 +242,40 @@ const ContentManager = () => {
               Add New Item
             </button>
           </div>
+
+          {/* Delete Confirmation Modal */}
+          {deleteModal.visible && (
+            <div className="connman-delete-modal-overlay">
+              <div className="connman-delete-modal-box">
+                <h3 className="connman-delete-modal-title">Confirm Deletion</h3>
+                <p className="connman-delete-modal-text">
+                  To delete <strong>{deleteModal.item?.name}</strong>, please type the name exactly:
+                </p>
+                <input
+                  type="text"
+                  className="connman-delete-modal-input"
+                  placeholder="Type the place name here"
+                  value={deleteModal.input}
+                  onChange={(e) => setDeleteModal({ ...deleteModal, input: e.target.value })}
+                  autoFocus
+                />
+                <div className="connman-delete-modal-actions">
+                  <button
+                    className="connman-delete-modal-btn-cancel"
+                    onClick={() => setDeleteModal({ visible: false, item: null, input: "" })}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="connman-delete-modal-btn-delete"
+                    onClick={confirmDelete}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
           {formVisible && (
             <form ref={formRef} onSubmit={handleSubmit} className="form-container">
@@ -328,7 +383,7 @@ const ContentManager = () => {
                 </div>
               </div>
 
-              {/* NEW Map Embed Link Field */}
+              {/* Map Embed Link Field */}
               <input
                 placeholder="Google Map Embed Link"
                 className="form-input"

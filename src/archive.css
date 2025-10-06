@@ -1,35 +1,129 @@
 /* General Page Styles */
 .archive-page {
-    display: flex;
-    font-family: 'Arial', sans-serif;
-    background-color: #e3e0e0;
-    height: 100vh;
-    overflow-y: auto;
-    margin-left: 245px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  display: flex;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  background-color: #e3e0e0;
+  height: 100vh;
+  overflow-y: auto;
+  margin-left: 245px;
+  animation: fadeSlideIn 0.4s ease-out;
 }
 
 /* Sidebar */
 .sidebar {
-    width: 250px;
-    background-color: #0033cc;
-    color: #fff;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  width: 250px;
+  background-color: #0033cc;
+  color: #fff;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
+/* Filter Bar */
+/* 🌟 Sleek Filter Bar Styling */
+.archive-content .filter-bar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 20px;
+  background: #ffffff;
+  padding: 12px 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.archive-content .filter-bar:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* Inputs, Selects, and Buttons */
 .archive-content .filter-bar select,
 .archive-content .filter-bar input,
 .archive-content .filter-bar button {
-  margin-right: 10px;
-  padding: 6px 10px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #d1d1d1;
   font-size: 0.9rem;
+  background: #fafafa;
+  color: #333;
+  transition: all 0.2s ease-in-out;
+  outline: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
+/* Hover and Focus Effects */
+.archive-content .filter-bar select:hover,
+.archive-content .filter-bar input:hover {
+  border-color: #999;
+  background: #fff;
+}
+
+.archive-content .filter-bar select:focus,
+.archive-content .filter-bar input:focus {
+  border-color: #0033cc;
+  box-shadow: 0 0 0 3px rgba(0, 51, 204, 0.15);
+  background: #fff;
+}
+
+/* make only the text search input longer */
+.archive-content .filter-bar input[type="text"] {
+  flex: 1.3; /* slightly wider */
+  min-width: 220px; /* ensures good size */
+}
+
+/* keep date inputs normal */
+.archive-content .filter-bar input[type="date"] {
+  flex: 0;
+  width: auto;
+}
+
+/* Placeholder Text */
+.archive-content .filter-bar input::placeholder {
+  color: #888;
+  font-style: italic;
+}
+
+/* Buttons */
+.archive-content .filter-bar button {
+  background: linear-gradient(135deg, #0033cc, #0055ff);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  box-shadow: 0 2px 5px rgba(0, 51, 204, 0.25);
+}
+
+.archive-content .filter-bar button:hover {
+  background: linear-gradient(135deg, #002bb8, #004ae6);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 7px rgba(0, 51, 204, 0.3);
+}
+
+.archive-content .filter-bar button:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 3px rgba(0, 51, 204, 0.25);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .archive-content .filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .archive-content .filter-bar select,
+  .archive-content .filter-bar input,
+  .archive-content .filter-bar button {
+    width: 100%;
+  }
+}
+
+
+
+/* Archive Report Card */
 .archive-report-card {
   background: #f8f8f8;
   padding: 12px 15px;
@@ -37,6 +131,9 @@
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   position: relative;
+  transform: scale(0.98);
+  opacity: 0;
+  animation: fadeInCard 0.4s ease forwards;
 }
 
 .archive-report-card mark {
@@ -46,6 +143,81 @@
   border-radius: 2px;
 }
 
+/* === Modal Styles (Unique to Archive) === */
+.archive-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  animation: fadeInBackdrop 0.3s ease;
+}
+
+.archive-modal-content {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 70vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  text-align: left;
+  transform: scale(0.95);
+  opacity: 0;
+  animation: modalPopIn 0.25s ease forwards;
+}
+
+.archive-modal-content h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1.3rem;
+  color: #333;
+}
+
+.archive-modal-content p {
+  line-height: 1.5;
+  color: #444;
+  white-space: pre-wrap;
+}
+
+.archive-modal-close-btn {
+  background: #ff4d4d;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  margin-top: 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.archive-modal-close-btn:hover {
+  background: #e60000;
+  transform: scale(1.03);
+}
+
+.archive-modal-open-btn {
+  color: #0033cc;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 6px;
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+}
+
+.archive-modal-open-btn:hover {
+  text-decoration: underline;
+  color: #002080;
+}
+
+/* Delete Button */
 .del-btn {
   position: absolute;
   right: 10px;
@@ -56,12 +228,15 @@
   padding: 5px 8px;
   border-radius: 4px;
   cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .del-btn:hover {
   background: #e60000;
+  transform: scale(1.05);
 }
 
+/* Pagination */
 .pagination {
   margin-top: 20px;
   display: flex;
@@ -74,6 +249,11 @@
   border-radius: 6px;
   border: 1px solid #ccc;
   cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.pagination button:hover {
+  background: #f1f1f1;
 }
 
 .pagination button:disabled {
@@ -81,119 +261,164 @@
   cursor: not-allowed;
 }
 
-
-/* Custom date range wrapper */
+/* Custom Date Range */
 .custom-date-range {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  
-  .custom-date-range input[type="date"] {
-    padding: 6px 8px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 14px;
-    background: #fff;
-    color: #333;
-  }
-  
-  .custom-date-range span {
-    font-size: 14px;
-    color: #555;
-  }
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.custom-date-range input[type="date"] {
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  background: #fff;
+  color: #333;
+}
+
+.custom-date-range span {
+  font-size: 14px;
+  color: #555;
+}
 
 /* Main Content */
 .archive-content {
-    flex: 1;
-    padding: 20px;
-    overflow-y: auto;
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  animation: fadeSlideIn 0.4s ease-out;
 }
 
 .archive-content h2 {
-    font-size: 28px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    color: #000000;
-    text-align: center;
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #000000;
+  text-align: center;
 }
 
 /* Archive List */
 .archive-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
 }
 
-/* Archive Report Card */
+/* Archive Report Card (Enhanced) */
 .archive-report-card {
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .archive-report-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
 .archive-report-card div {
-    margin-bottom: 10px;
-    font-size: 14px;
-    color: #333;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #333;
 }
 
 .archive-report-card strong {
-    font-weight: bold;
-    color: #0033cc;
+  font-weight: bold;
+  color: #0033cc;
 }
 
 /* Empty State */
 .archive-content p {
-    font-size: 16px;
-    color: #666;
-    text-align: center;
-    margin-top: 50px;
+  font-size: 16px;
+  color: #666;
+  text-align: center;
+  margin-top: 50px;
 }
 
+/* Filter Bar */
 .filter-bar {
-    display: flex;
-    gap: 16px;
-    margin-bottom: 20px;
-    align-items: center;
-  }
-  
-  .filter-bar select,
-  .filter-bar input {
-    padding: 10px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    outline: none;
-  }
-  
-  .filter-bar input {
-    flex: 1;
-  }
-  
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.filter-bar select,
+.filter-bar input {
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.filter-bar select:focus,
+.filter-bar input:focus {
+  border-color: #0033cc;
+}
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .archive-content {
-        padding: 10px;
-    }
+  .archive-content {
+    padding: 10px;
+  }
 
-    .archive-report-card {
-        padding: 15px;
-    }
+  .archive-report-card {
+    padding: 15px;
+  }
 
-    .archive-content h2 {
-        font-size: 24px;
-    }
+  .archive-content h2 {
+    font-size: 24px;
+  }
+}
+
+/* === Animations === */
+@keyframes fadeInCard {
+  0% {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInBackdrop {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalPopIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }

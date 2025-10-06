@@ -365,7 +365,7 @@ const CaviteInfographic = ({ searchTerm }) => {
 
               {/* Transportation */}
               <div className="cavite-modal-transportation">
-                <h4><MapPin /> How to get there?</h4>
+                <h4><MapPin /> How to get there from Manila?</h4>
                 <ul>
                   {selectedItem.details.transportation
                     ?.split(/\r?\n|-/)
