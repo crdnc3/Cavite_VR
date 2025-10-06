@@ -13,6 +13,7 @@ function Archive() {
   const [customEndDate, setCustomEndDate] = useState('');
   const [sortOption, setSortOption] = useState('newest');
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedMessage, setSelectedMessage] = useState(null);
   const itemsPerPage = 10;
 
   useEffect(() => {
@@ -41,7 +42,6 @@ function Archive() {
     fetchArchivedReports();
   }, []);
 
-  // Date range helper
   const getDateRange = (filter) => {
     const now = new Date();
     let start, end;
@@ -77,7 +77,6 @@ function Archive() {
   useEffect(() => {
     let filtered = archivedReports;
 
-    // Time filter
     if (timeFilter !== 'all' && timeFilter !== 'custom') {
       const range = getDateRange(timeFilter);
       if (range) {
@@ -88,7 +87,6 @@ function Archive() {
       }
     }
 
-    // Custom range
     if (timeFilter === 'custom' && customStartDate && customEndDate) {
       const start = new Date(customStartDate);
       const end = new Date(customEndDate);
@@ -98,7 +96,6 @@ function Archive() {
       );
     }
 
-    // Search filter
     if (searchTerm.trim() !== '') {
       filtered = filtered.filter(
         (report) =>
@@ -108,8 +105,7 @@ function Archive() {
       );
     }
 
-    // Sort
-    filtered = [...filtered]; // create a new array to avoid in-place mutation
+    filtered = [...filtered];
     filtered.sort((a, b) => {
       if (sortOption === 'newest') return b.createdAt - a.createdAt;
       if (sortOption === 'oldest') return a.createdAt - b.createdAt;
@@ -119,17 +115,15 @@ function Archive() {
     });
 
     setFilteredReports(filtered);
-    setCurrentPage(1); // reset page on new filter
+    setCurrentPage(1);
   }, [archivedReports, timeFilter, customStartDate, customEndDate, searchTerm, sortOption]);
 
-  // Pagination
   const totalPages = Math.ceil(filteredReports.length / itemsPerPage);
   const paginatedReports = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     return filteredReports.slice(startIndex, startIndex + itemsPerPage);
   }, [filteredReports, currentPage]);
 
-  // CSV export
   const exportToCSV = () => {
     const headers = ['Date', 'Email', 'Location', 'Message'];
     const rows = filteredReports.map(r => [
@@ -152,7 +146,6 @@ function Archive() {
     document.body.removeChild(link);
   };
 
-  // Delete report
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to permanently delete this report?')) return;
     try {
@@ -163,7 +156,6 @@ function Archive() {
     }
   };
 
-  // Highlight search terms
   const highlightText = (text) => {
     if (!searchTerm) return text;
     const regex = new RegExp(`(${searchTerm})`, 'gi');
@@ -178,7 +170,6 @@ function Archive() {
       <div className="archive-content">
         <h2>Archived Feedbacks</h2>
 
-        {/* Filter, Search, Sort, Export */}
         <div className="filter-bar">
           <select value={timeFilter} onChange={e => setTimeFilter(e.target.value)}>
             <option value="all">All Time</option>
@@ -214,7 +205,6 @@ function Archive() {
           <button onClick={exportToCSV}>Export CSV</button>
         </div>
 
-        {/* Reports */}
         {paginatedReports.length === 0 ? (
           <p>No archived reports found.</p>
         ) : (
@@ -224,19 +214,55 @@ function Archive() {
                 <div><strong>Date:</strong> {highlightText(report.createdAt.toLocaleString())}</div>
                 <div><strong>Email:</strong> {highlightText(report.email)}</div>
                 <div><strong>Location:</strong> {highlightText(report.locationTitle)}</div>
-                <div><strong>Message:</strong> {highlightText(report.reportText)}</div>
+                <div>
+                  <strong>Message:</strong>{' '}
+                  {report.reportText.length > 120 ? (
+                    <>
+                      {report.reportText.slice(0, 120)}...
+                      <button
+                        className="archive-modal-open-btn"
+                        onClick={() => setSelectedMessage(report.reportText)}
+                      >
+                        Read More
+                      </button>
+                    </>
+                  ) : (
+                    report.reportText
+                  )}
+                </div>
                 <button className="del-btn" onClick={() => handleDelete(report.id)}>Delete</button>
               </li>
             ))}
           </ul>
         )}
 
-        {/* Pagination Controls */}
         {totalPages > 1 && (
           <div className="pagination">
             <button disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)}>Prev</button>
             <span>{currentPage} / {totalPages}</span>
             <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)}>Next</button>
+          </div>
+        )}
+
+        {/* Modal for full message */}
+        {selectedMessage && (
+          <div
+            className="archive-modal-backdrop"
+            onClick={() => setSelectedMessage(null)}
+          >
+            <div
+              className="archive-modal-content"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3>Full Feedback Message</h3>
+              <p>{selectedMessage}</p>
+              <button
+                className="archive-modal-close-btn"
+                onClick={() => setSelectedMessage(null)}
+              >
+                Close
+              </button>
+            </div>
           </div>
         )}
       </div>

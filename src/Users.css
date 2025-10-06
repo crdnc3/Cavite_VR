@@ -14,6 +14,179 @@
   text-align: center;
 }
 
+/* Overlay background */
+.del-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  animation: fadeIn 0.25s ease-out;
+}
+
+/* Modal box */
+.del-modal-content {
+  background: #fff;
+  padding: 24px 28px;
+  border-radius: 16px;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 420px;
+  text-align: center;
+  animation: slideUp 0.25s ease-out;
+}
+
+/* Title */
+.del-modal-content h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 10px;
+}
+
+/* Message */
+.del-modal-content p {
+  font-size: 0.95rem;
+  color: #555;
+  margin-bottom: 24px;
+  line-height: 1.4;
+}
+
+/* Buttons container */
+.del-modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.role-select {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #333;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.25s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  /* Custom dropdown arrow */
+  background-image: url("data:image/svg+xml;utf8,<svg fill='none' stroke='%23666' stroke-width='2' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><path stroke-linecap='round' stroke-linejoin='round' d='M6 9l6 6 6-6'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 14px;
+  padding-right: 30px; /* space for arrow */
+}
+
+/* Hover state */
+.role-select:hover {
+  border-color: #999;
+  background-color: #f9fafb;
+}
+
+/* Focus state */
+.role-select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+/* Option styles */
+.role-select option {
+  font-size: 12px;
+  color: #333;
+  background: #fff;
+}
+
+
+/* Disabled state (optional) */
+.role-select:disabled {
+  background-color: #f3f4f6;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Smooth transition for focus + hover */
+.role-select,
+.role-select option {
+  transition: all 0.25s ease;
+}
+
+
+
+/* Confirm (Delete) Button */
+.ucnfrm-btn {
+  background-color: #dc2626;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.del-modal-content h3::before {
+  content: "⚠️ ";
+}
+
+
+.ucnfrm-btn:hover {
+  background-color: #b91c1c;
+  transform: translateY(-1px);
+}
+
+/* Cancel Button */
+.ucncl-btn {
+  background-color: #e5e7eb;
+  color: #333;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.ucncl-btn:hover {
+  background-color: #d1d5db;
+  transform: translateY(-1px);
+}
+
+
+/* Smooth animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+
 .spinner {
   width: 40px;
   height: 40px;
@@ -439,13 +612,6 @@
   border: 1px solid #2196f3;
 }
 
-.role-select {
-  padding: 4px 8px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: white;
-}
 
 /* Actions Cell */
 .actions-cell {

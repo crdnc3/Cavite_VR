@@ -1300,7 +1300,7 @@ function Admin() {
                 </div>
                 <button 
                   onClick={applyCustomDateFilter}
-                  className="btn-apply-date"
+                  className="btn-apply-date-user"
                 >
                   Apply Custom Range
                 </button>

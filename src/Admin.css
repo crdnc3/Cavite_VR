@@ -1261,6 +1261,23 @@ body {
   font-size: 0.875rem;
 }
 
+.btn-apply-date-user {
+  background: #2563EB; /* nice vivid blue (Tailwind blue-600) */
+  box-shadow: 0 0 10px rgba(37, 99, 235, 0.5); /* soft blue glow */
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.btn-apply-date-user:hover {
+  background: #1d4ed8; /* darker blue on hover */
+  box-shadow: 0 0 10px rgba(37, 99, 235, 0.5); /* soft blue glow */
+}
+
 .btn-apply-date {
   background: #CE1126;
   filter: url(#redGlow);
