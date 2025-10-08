@@ -134,7 +134,7 @@ html, body {
 .login-input {
     width: 100%;
     padding: 20px;
-    border: 2px solid #ccc;
+    border: 2px solid #000000;
     border-radius: 30px;
     background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(10px);
