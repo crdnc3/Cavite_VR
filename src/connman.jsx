@@ -24,8 +24,8 @@ const ContentManager = () => {
   const [formVisible, setFormVisible] = useState(false);
   const [activeView, setActiveView] = useState("treasures");
   const [deleteModal, setDeleteModal] = useState({ visible: false, item: null, input: "" });
-
   const [imageInput, setImageInput] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const [formData, setFormData] = useState({
     name: "",
@@ -172,6 +172,15 @@ const ContentManager = () => {
         description: "Failed to delete item.",
       });
     }
+  };
+
+  const filteredItems = () => {
+    const items = activeView === "treasures" ? treasures : landmarks;
+    if (!searchQuery.trim()) return items;
+    
+    return items.filter(item =>
+      item.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
   };
 
   const renderItem = (item) => (
@@ -386,7 +395,7 @@ const ContentManager = () => {
               {/* Map Embed Link Field */}
               <input
                 placeholder="Google Map Embed Link"
-                className="form-input"
+                className="google-form"
                 value={formData.mapLink}
                 onChange={(e) => setFormData({ ...formData, mapLink: e.target.value })}
               />
@@ -478,17 +487,36 @@ const ContentManager = () => {
             </select>
           </div>
 
+          {/* Search Bar */}
+          <div className="connman-search-container">
+            <input
+              type="text"
+              className="connman-search-input"
+              placeholder="Search by name..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            {searchQuery && (
+              <button
+                className="connman-search-clear"
+                onClick={() => setSearchQuery("")}
+              >
+                ✕
+              </button>
+            )}
+          </div>
+
           <h2 className="section-header">
             {activeView === "treasures" ? "Treasures" : "Landmarks"} (
-            {activeView === "treasures" ? treasures.length : landmarks.length})
+            {filteredItems().length})
           </h2>
 
           {loading ? (
             <p className="loading">Loading...</p>
-          ) : activeView === "treasures" ? (
-            treasures.map(renderItem)
+          ) : filteredItems().length === 0 ? (
+            <p className="no-results">No items found matching "{searchQuery}"</p>
           ) : (
-            landmarks.map(renderItem)
+            filteredItems().map(renderItem)
           )}
         </div>
       </div>
