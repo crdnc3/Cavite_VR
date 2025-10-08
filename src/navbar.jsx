@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { auth } from './firebase';
 import { signOut } from 'firebase/auth';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import './navbar.css';
 import justlogo from './assets/images/justlogo.png';
 
@@ -9,16 +10,19 @@ const NavBar = ({ searchTerm, setSearchTerm }) => {
   const navigate = useNavigate();
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
+  // Handle search (Enter key)
   const handleSearch = (e) => {
     if (e.key === 'Enter' && searchTerm.trim() !== '') {
       navigate('/caviteinfographic');
     }
   };
 
+  // Open logout confirmation modal
   const handleLogoutClick = () => {
     setShowLogoutConfirm(true);
   };
 
+  // Confirm logout action
   const confirmLogout = async () => {
     try {
       await signOut(auth);
@@ -29,6 +33,7 @@ const NavBar = ({ searchTerm, setSearchTerm }) => {
     }
   };
 
+  // Cancel logout
   const cancelLogout = () => {
     setShowLogoutConfirm(false);
   };
@@ -46,11 +51,9 @@ const NavBar = ({ searchTerm, setSearchTerm }) => {
         <div className="navbar-container">
           {/* Logo/Brand Section */}
           <div className="navbar-brand">
-          <div className="navbar-brand">
             <div className="brand-icon">
               <img src={justlogo} alt="Brand Logo" className="logo-img" />
             </div>
-          </div>
             <span className="brand-text">CAVITE:VR</span>
           </div>
 
@@ -82,13 +85,10 @@ const NavBar = ({ searchTerm, setSearchTerm }) => {
             </NavLink>
           </div>
 
-          {/* Search and Profile Section */}
+          {/* Search and Logout Section */}
           <div className="navbar-actions">
             <div className="cavite-container">
-              <svg className="cavite-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <circle cx="11" cy="11" r="8"></circle>
-                <path d="21 21l-4.35-4.35"></path>
-              </svg>
+              <i className="fas fa-search cavite-icon"></i>
               <input
                 type="text"
                 className="cavite-input"
@@ -102,12 +102,10 @@ const NavBar = ({ searchTerm, setSearchTerm }) => {
             <button
               className="profile-button"
               onClick={handleLogoutClick}
-              title="Profile & Settings"
+              title="Sign Out"
             >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
-              </svg>
+              <i className="fas fa-right-from-bracket"></i>
+
             </button>
           </div>
         </div>
@@ -119,11 +117,7 @@ const NavBar = ({ searchTerm, setSearchTerm }) => {
           <div className="logout-modal">
             <div className="modal-header">
               <div className="modal-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                  <polyline points="16,17 21,12 16,7"></polyline>
-                  <line x1="21" y1="12" x2="9" y2="12"></line>
-                </svg>
+                <i className="fas fa-sign-out-alt"></i>
               </div>
               <h3>Sign Out</h3>
             </div>
