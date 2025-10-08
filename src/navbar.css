@@ -11,6 +11,34 @@
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     position: relative; /* Ensure position is relative or static */
   }
+
+  .cavite-icon {
+    color: #666;
+    margin-right: 8px;
+    font-size: 1rem;
+  }
+  
+  .cavite-input {
+    border: none;
+    outline: none;
+    font-size: 0.95rem;
+    flex: 1;
+    background: transparent;
+  }
+  
+  .profile-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.3rem;
+    color: #333333a9;
+    margin-left: 12px;
+    transition: color 0.2s ease;
+  }
+  
+  .profile-button:hover {
+    color: #000000;
+  }
   
   /* Philippine Flag Accent Strip */
   .flag-accent {
@@ -209,22 +237,6 @@
     transition: all 0.3s ease;
   }
   
-  .profile-button:hover {
-    border-color: #0038A8;
-    background: #f8fafc;
-    transform: scale(1.05);
-  }
-  
-  .profile-button svg {
-    width: 20px;
-    height: 20px;
-    color: #64748b;
-    stroke-width: 2;
-  }
-  
-  .profile-button:hover svg {
-    color: #0038A8;
-  }
   
   /* Modal Styles */
   .modal-backdrop {

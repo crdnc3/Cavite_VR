@@ -27,6 +27,8 @@ const CaviteInfographic = ({ searchTerm }) => {
   const [error, setError] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [customAlert, setCustomAlert] = useState({ show: false, message: "" });
+
   
   // Feedback states
   const [showFeedbackBox, setShowFeedbackBox] = useState(false);
@@ -132,15 +134,15 @@ const CaviteInfographic = ({ searchTerm }) => {
     try {
       const user = auth.currentUser;
       if (!user) {
-        alert("You must be logged in to submit feedback.");
+        setCustomAlert({ show: true, message: "You must be logged in to submit feedback." });
         return;
       }
-
+  
       if (!feedbackText.trim()) {
-        alert("Please enter your feedback before submitting.");
+        setCustomAlert({ show: true, message: "Please enter your feedback before submitting." });
         return;
       }
-
+  
       await addDoc(collection(db, "reports"), {
         userId: user.uid,
         email: user.email,
@@ -148,13 +150,13 @@ const CaviteInfographic = ({ searchTerm }) => {
         reportText: feedbackText,
         submittedAt: serverTimestamp()
       });
-
-      alert('Thank you. Your feedback has been submitted.');
+  
+      setCustomAlert({ show: true, message: "Thank you. Your feedback has been submitted." });
       setFeedbackText('');
       setShowFeedbackBox(false);
     } catch (error) {
       console.error("Error submitting feedback:", error);
-      alert("An error occurred. Please try again.");
+      setCustomAlert({ show: true, message: "An error occurred. Please try again." });
     }
   };
 
@@ -426,6 +428,18 @@ const CaviteInfographic = ({ searchTerm }) => {
               </div>
             </div>
           )}
+
+          {/* Feedback Confirmation Modal */}
+{customAlert.show && (
+  <div className="custom-alert-overlay" onClick={() => setCustomAlert({ show: false, message: "" })}>
+    <div className="custom-alert-box" onClick={(e) => e.stopPropagation()}>
+      <p>{customAlert.message}</p>
+      <button onClick={() => setCustomAlert({ show: false, message: "" })}>OK</button>
+    </div>
+  </div>
+)}
+
+
         </div>
       )}
     </div>

@@ -929,7 +929,7 @@
   align-items: center;
   gap: 8px;
   padding: 12px 24px;
-  background-color: #3b82f6;
+  background: var(--ph-blue);
   color: white;
   border: none;
   border-radius: 8px;
@@ -981,22 +981,96 @@
 }
 
 .cavite-submit-feedback-button {
-  background-color: #10b981;
+  background-color: var(--ph-blue);
   color: white;
   padding: 10px 20px;
   border: none;
   border-radius: 6px;
   cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.cavite-submit-feedback-button:hover {
+  background-color: #004aad; /* darker blue on hover */
+  transform: translateY(-2px);
 }
 
 .cavite-cancel-feedback-button {
-  background-color: #6b7280;
+  background-color: #ce1126;
   color: white;
   padding: 10px 20px;
   border: none;
   border-radius: 6px;
   cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.15s ease;
 }
+
+.cavite-cancel-feedback-button:hover {
+  background-color: #a50d1f; /* darker red on hover */
+  transform: translateY(-2px);
+}
+
+.custom-alert-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.25s ease-in;
+}
+
+.custom-alert-box {
+  background: #fff;
+  padding: 24px 32px;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+  max-width: 360px;
+  text-align: center;
+  animation: popIn 0.25s ease-out;
+}
+
+.custom-alert-box p {
+  font-size: 15px;
+  color: #333;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.custom-alert-box button {
+  background-color: var(--ph-blue);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.custom-alert-box button:hover {
+  background-color: #004aad;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 
 /* Responsive Design */
 @media (max-width: 768px) {

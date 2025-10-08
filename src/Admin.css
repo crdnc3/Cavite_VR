@@ -751,12 +751,33 @@ body {
   max-width: 600px;
   width: 100%;
   max-height: 80vh;
-  overflow-y: auto;
   box-shadow: var(--shadow-xl);
   border: 1px solid var(--gray-200);
   animation: slideUp var(--transition-normal);
   position: relative;
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: rgba(0, 0, 0, 0.25) transparent; /* Firefox colors */
 }
+
+/* Chrome, Edge, Safari scrollbar styling */
+.modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #000000, #434343);
+  border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #1a1a1a, #5a5a5a);
+}
+
 
 @keyframes slideUp {
   from { 
@@ -805,80 +826,118 @@ body {
 
 /* Activity Cards */
 .activity-card {
-  background: var(--gray-50);
-  border-radius: var(--border-radius-md);
-  padding: 16px;
-  margin-bottom: 16px;
-  border: 1px solid var(--gray-200);
-  transition: all var(--transition-normal);
+  background:
+    linear-gradient(#ffffff, #ffffff) padding-box, /* inner background */
+    linear-gradient(135deg, #000000, #434343) border-box; /* black gradient border */
+  border: 2px solid transparent;
+  border-radius: 14px;
+  padding: 20px 22px;
+  margin-bottom: 18px;
+  transition: all 0.3s ease;
   position: relative;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  text-align: left;
 }
 
 .activity-card:hover {
-  background: var(--white);
-  box-shadow: var(--shadow-sm);
-  transform: translateX(4px);
+  background:
+    linear-gradient(#f9fafb, #f9fafb) padding-box,
+    linear-gradient(135deg, #1a1a1a, #4d4d4d) border-box;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  transform: translateY(-3px);
 }
 
-.activity-card:last-child {
-  margin-bottom: 0;
+
+.activity-card:hover {
+  border-color: #d0d5dc;
+  background: #f9fafb;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  transform: translateY(-3px);
 }
 
+/* Header Section */
 .activity-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
+  align-items: flex-start;
+  margin-bottom: 10px;
 }
 
 .activity-date {
-  color: var(--gray-500);
-  font-size: 0.8125rem;
+  color: #6b7280;
+  font-size: 0.82rem;
   font-weight: 500;
 }
 
+/* Main Text Section */
 .activity-text {
-  color: var(--gray-700);
-  font-size: 0.875rem;
-  line-height: 1.5;
+  color: #1f2937;
+  font-size: 0.95rem;
+  line-height: 1.65;
   margin-bottom: 8px;
+  font-weight: 400;
 }
 
 .activity-text strong {
-  color: var(--gray-900);
+  color: #111827;
   font-weight: 600;
 }
 
 .activity-subtext {
-  color: var(--gray-500);
-  font-size: 0.8125rem;
-  margin-top: 8px;
+  color: #9ca3af;
+  font-size: 0.83rem;
+  margin-top: 6px;
+  font-weight: 100;
 }
 
 /* Resolve Button */
 .resolve-button {
-  background: var(--success-color);
-  color: var(--white);
+  background: linear-gradient(135deg, #2b77cb, #1a365d);
+  color: #fff;
   border: none;
-  border-radius: var(--border-radius-sm);
-  padding: 6px 12px;
-  font-size: 0.75rem;
+  border-radius: 10px;
+  padding: 8px 16px;
+  font-size: 0.78rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: all 0.25s ease;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px;
+  box-shadow: 0 2px 6px rgba(29, 78, 216, 0.25);
+  align-self: flex-start;
 }
 
 .resolve-button:hover {
-  background: #30A46C;
-  transform: translateY(-1px);
+  background: linear-gradient(135deg, #1a365d, #2b77cb);
+  box-shadow: 0 4px 10px rgba(22, 163, 74, 0.25);
+  transform: translateY(-2px);
+}
+
+.resolve-button:active {
+  transform: scale(0.98);
 }
 
 .resolve-button:disabled {
-  background: var(--gray-400);
+  background: #cbd5e1;
   cursor: not-allowed;
+  box-shadow: none;
   transform: none;
+}
+
+/* Optional subtle animation when card appears */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.activity-card {
+  animation: fadeUp 0.3s ease both;
 }
 
 /* Form Styles */
@@ -1096,7 +1155,7 @@ body {
 }
 
 .time-stats-summary {
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  background: linear-gradient(135deg, #2b77cb, #1a365d);
   border-radius: var(--border-radius-lg);
   padding: 24px;
   margin-bottom: 24px;
