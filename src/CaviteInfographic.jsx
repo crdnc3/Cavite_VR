@@ -16,6 +16,8 @@ import {
   ChevronRight,
   MessageCircle,
 } from "lucide-react";
+import { NavLink } from "react-router-dom";
+import justlogo from './assets/images/justlogo.png';
 import "./CaviteInfographic.css";
 
 const CaviteInfographic = ({ searchTerm }) => {
@@ -33,6 +35,10 @@ const CaviteInfographic = ({ searchTerm }) => {
   // Feedback states
   const [showFeedbackBox, setShowFeedbackBox] = useState(false);
   const [feedbackText, setFeedbackText] = useState('');
+
+  const [showPrivacyFooter, setShowPrivacyFooter] = useState(false);
+const [showTermsFooter, setShowTermsFooter] = useState(false);
+
 
   const fetchData = useCallback(async () => {
     try {
@@ -121,8 +127,8 @@ const CaviteInfographic = ({ searchTerm }) => {
     setSelectedItem(item);
     setCurrentImageIndex(0);
     setLightboxOpen(false);
-    setShowFeedbackBox(false); // Reset feedback box when opening new modal
-    setFeedbackText(''); // Clear feedback text
+    setShowFeedbackBox(false);
+    setFeedbackText('');
   };
 
   // Feedback functions
@@ -430,18 +436,165 @@ const CaviteInfographic = ({ searchTerm }) => {
           )}
 
           {/* Feedback Confirmation Modal */}
-{customAlert.show && (
-  <div className="custom-alert-overlay" onClick={() => setCustomAlert({ show: false, message: "" })}>
-    <div className="custom-alert-box" onClick={(e) => e.stopPropagation()}>
-      <p>{customAlert.message}</p>
-      <button onClick={() => setCustomAlert({ show: false, message: "" })}>OK</button>
+          {customAlert.show && (
+            <div className="custom-alert-overlay" onClick={() => setCustomAlert({ show: false, message: "" })}>
+              <div className="custom-alert-box" onClick={(e) => e.stopPropagation()}>
+                <p>{customAlert.message}</p>
+                <button onClick={() => setCustomAlert({ show: false, message: "" })}>OK</button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Footer */}
+      <footer className="heritage-site-footer">
+        <div className="heritage-footer-wrapper">
+          {/* Footer Logo and Branding */}
+          <div className="heritage-footer-brand">
+            <img src={justlogo} alt="Cavite VR Logo" className="heritage-footer-logo" />
+            <div className="heritage-footer-branding-text">
+              <h4>Cavite: VR</h4>
+              <p>Heritage Through Technology</p>
+            </div>
+          </div>
+
+          {/* Footer Navigation Links */}
+          <nav className="heritage-footer-navigation">
+            <h5>Quick Links</h5>
+            <div className="heritage-footer-nav-links">
+              <NavLink 
+                to="/caviteinfographic" 
+                className="heritage-footer-nav-item"
+              >
+                HOME
+              </NavLink>
+              <NavLink 
+                to="/about" 
+                className="heritage-footer-nav-item"
+              >
+                ABOUT
+              </NavLink>
+              <NavLink 
+                to="/faq" 
+                className="heritage-footer-nav-item"
+              >
+                FAQ
+              </NavLink>
+            </div>
+          </nav>
+
+          {/* Footer Legal Links */}
+          <div className="heritage-footer-legal">
+  <h5>Legal</h5>
+  <ul className="heritage-footer-legal-links">
+    <li>
+      <button className="footer-legal-link" onClick={() => setShowPrivacyFooter(true)}>
+        Privacy Policy
+      </button>
+    </li>
+    <li>
+      <button className="footer-legal-link" onClick={() => setShowTermsFooter(true)}>
+        Terms of Service
+      </button>
+    </li>
+  </ul>
+</div>
+
+{/* === FOOTER PRIVACY MODAL === */}
+{showPrivacyFooter && (
+  <div className="footer-privacy-modal-overlay">
+    <div className="footer-privacy-modal">
+      <span className="footer-close-modal" onClick={() => setShowPrivacyFooter(false)}>
+        &times;
+      </span>
+      <h2>Privacy Policy</h2>
+      <p>
+        Your privacy is important to us. This Privacy Policy explains how we collect,
+        use, and protect your information when you use the Cavite VR Website.
+      </p>
+      <ul>
+        <li>
+          <b>Information We Collect:</b> We only collect your <b>email</b>, <b>region</b>, and
+          <b> city</b> to help us understand user interest from different areas.
+        </li>
+        <li>
+          <b>Use of Information:</b> Data is used solely for improving user experience,
+          educational content, and website functionality. We do not sell or share your
+          information with third parties.
+        </li>
+        <li>
+          <b>Data Security:</b> Reasonable technical and organizational measures are applied
+          to protect your data from unauthorized access or disclosure.
+        </li>
+        <li>
+          <b>User Control:</b> You can request access, correction, or deletion of your data by
+          contacting our support team.
+        </li>
+        <li>
+          <b>Third-Party Services:</b> Some features (e.g., Google Maps) follow their own
+          privacy policies. We are not responsible for those.
+        </li>
+        <li>
+          <b>Updates:</b> We may update this policy periodically. Continued use implies
+          acceptance of any revisions.
+        </li>
+      </ul>
+      <p>
+        By using the Cavite VR Website, you consent to this Privacy Policy.
+      </p>
     </div>
   </div>
 )}
 
+{/* === FOOTER TERMS MODAL === */}
+{showTermsFooter && (
+  <div className="footer-terms-modal-overlay">
+    <div className="footer-terms-modal">
+      <span className="footer-close-modal" onClick={() => setShowTermsFooter(false)}>
+        &times;
+      </span>
+      <h2>Terms of Use</h2>
+      <p>
+        Welcome to the Cavite VR Website. By using our platform, you agree to the following
+        terms and conditions:
+      </p>
+      <ul>
+        <li>
+          <b>Educational Purpose:</b> Content is provided solely for educational and personal
+          use. Commercial use or redistribution without consent is prohibited.
+        </li>
+        <li>
+          <b>Intellectual Property:</b> Historical data and photographs remain the property of
+          their respective owners. Unauthorized copying or distribution is not allowed.
+        </li>
+        <li>
+          <b>Accuracy of Information:</b> While verified sources are used, some data (e.g.,
+          operating hours, fees) may change. Check official sources before visiting.
+        </li>
+        <li>
+          <b>Third-Party Links:</b> We are not responsible for external links or content.
+        </li>
+        <li>
+          <b>Limitation of Liability:</b> Use of the site is at your own risk. We are not liable
+          for damages or losses resulting from reliance on provided content.
+        </li>
+      </ul>
+      <p>
+        By continuing to use the Cavite VR Website, you acknowledge and agree to these Terms of
+        Use. If you do not agree, please discontinue use of the site.
+      </p>
+    </div>
+  </div>
+)}
 
         </div>
-      )}
+
+        {/* Footer Copyright */}
+        <div className="heritage-footer-copyright">
+          <p>&copy; 2024 Cavite: VR. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
   );
 };

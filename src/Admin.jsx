@@ -195,6 +195,62 @@ function Admin() {
     }
   };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   // Fetch landmarks data
   const fetchLandmarks = async () => {
     try {
@@ -231,6 +287,28 @@ function Admin() {
     }
   };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
   // Enhanced filter users by date for print functionality
   const filterPlaceDataByDate = (timeFilter, customStart = null, customEnd = null) => {
     const [startDate, endDate] = getDateRange(timeFilter, customStart, customEnd);
