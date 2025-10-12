@@ -76,7 +76,7 @@ body {
 .content-manager {
     max-width: 2000px;
     margin: 0 auto;
-    background: var(--white);
+    background: #ffffff23;
     padding: var(--spacing-xl);
     border-radius: var(--border-radius-lg);
     box-shadow: var(--shadow-sm);

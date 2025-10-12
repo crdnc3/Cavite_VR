@@ -1,5 +1,8 @@
 /* Philippine Heritage - Modern Sleek Design */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Alegreya+SC:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sorts+Mill+Goudy:wght@400;700&display=swap');
 
 :root {
   /* Philippine Flag Colors */
@@ -42,15 +45,49 @@
 
 /* Global Styles */
 .cavite-infographic {
-    overflow: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+  overflow: auto;
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: #2b6cb0 #e5e7eb; /* thumb | track */
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   background: linear-gradient(135deg, var(--neutral-50) 0%, var(--neutral-100) 100%);
   min-height: 100vh;
-  color: var(--neutral-800);
+  color: #f8fafc;
   line-height: 1.6;
 }
+
+.cavite-feedback-modal-container h4 {
+  color: black;
+  font-size: 1.2rem;
+  font-weight: 600;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  margin-bottom: 12px;
+}
+
+
+/* === Chrome, Edge, Safari === */
+.cavite-infographic::-webkit-scrollbar {
+  width: 12px;
+}
+
+.cavite-infographic::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  box-shadow: inset 0 0 4px rgba(255, 255, 255, 0.15);
+}
+
+.cavite-infographic::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #2b6cb0 0%, #63b3ed 50%, #2b6cb0 100%);
+  border-radius: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.cavite-infographic::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #63b3ed 0%, #90cdf4 50%, #63b3ed 100%);
+  box-shadow: 0 0 8px rgba(99, 179, 237, 0.7);
+  transform: scaleX(1.1);
+}
+
 
 /* Header Section */
 .cavite-header {
@@ -80,16 +117,19 @@
   z-index: 1;
 }
 
+
 .cavite-main-title {
-  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-family: 'Sorts Mill Goudy', serif;
+  font-size: clamp(3rem, 7vw, 6rem); /* ⬅️ bigger now */
   font-weight: 700;
-  margin-bottom: 1rem;
+  margin-bottom: -20px;
   letter-spacing: -0.02em;
   background: linear-gradient(135deg, var(--ph-white) 0%, var(--ph-gold-light) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
 
 .cavite-subtitle {
   font-size: clamp(1.125rem, 2.5vw, 1.5rem);
@@ -1054,6 +1094,376 @@
 .custom-alert-box button:hover {
   background-color: #004aad;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.footer-privacy-modal-overlay,
+.footer-terms-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.footer-privacy-modal,
+.footer-terms-modal {
+  background: linear-gradient(135deg, #1a365d 0%, #2b6cb0 50%, #1a365d 100%);
+    color: #ecf0f1;
+  padding: 2rem;
+  width: 90%;
+  max-width: 600px;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  overflow-y: auto;
+  max-height: 80vh;
+}
+
+.footer-close-modal {
+  float: right;
+  font-size: 1.8rem;
+  cursor: pointer;
+  color: #ecf0f1;
+}
+
+.footer-privacy-modal h2,
+.footer-terms-modal h2 {
+  margin-bottom: 1rem;
+  color:#ecf0f1;
+}
+
+.footer-privacy-modal ul,
+.footer-terms-modal ul {
+  margin-left: 1.5rem;
+  line-height: 1.6;
+}
+
+.footer-legal-link {
+  background: none;
+  border: none;
+  color: #ecf0f1;
+  cursor: pointer;
+  text-decoration: none; /* removed underline */
+  font-size: 0.95rem;
+  transition: color 0.3s ease, transform 0.3s ease; /* smooth hover effect */
+}
+
+.footer-legal-link:hover {
+  color: #ffd700; /* gold color on hover */
+  transform: translateX(5px); /* slide to the right */
+}
+
+
+
+
+
+/* ============================================
+   CAVITE HERITAGE FOOTER STYLES
+   ============================================ */
+
+   .heritage-site-footer {
+    background: linear-gradient(135deg, #1a365d 0%, #2b6cb0 50%, #1a365d 100%);
+    color: #ecf0f1;
+    padding: 60px 20px 20px;
+    margin-top: 80px;
+    border-top: 3px solid #ffd700;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .heritage-footer-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 40px;
+    margin-bottom: 40px;
+  }
+  
+  /* Brand Section */
+  .heritage-footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .heritage-footer-logo {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    filter: brightness(1.1);
+    transition: transform 0.3s ease;
+  }
+  
+  .heritage-footer-logo:hover {
+    transform: scale(1.1);
+  }
+  
+  .heritage-footer-branding-text h4 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: #ffd700;
+    letter-spacing: 1px;
+  }
+  
+  .heritage-footer-branding-text p {
+    margin: 5px 0 0 0;
+    font-size: 14px;
+    color: #bdc3c7;
+    font-style: italic;
+  }
+  
+  /* Navigation Section */
+  .heritage-footer-navigation h5,
+  .heritage-footer-legal h5 {
+    margin: 0 0 20px 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #ffd700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  
+  .heritage-footer-nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .heritage-footer-nav-item {
+    color: #ecf0f1;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    padding-left: 10px;
+    border-left: 2px solid transparent;
+    display: inline-block;
+  }
+  
+  .heritage-footer-nav-item:hover {
+    color: #ffd700;
+    border-left-color: #ffd700;
+    transform: translateX(5px);
+  }
+  
+  /* Legal Section */
+  .heritage-footer-legal-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .heritage-footer-legal-links li {
+    margin: 0;
+  }
+  
+  .heritage-footer-legal-links a {
+    color: #ecf0f1;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    padding-left: 10px;
+    border-left: 2px solid transparent;
+    display: inline-block;
+  }
+  
+  .heritage-footer-legal-links a:hover {
+    color: #ffd700;
+    border-left-color: #ffd700;
+    transform: translateX(5px);
+  }
+  
+  /* Copyright Section */
+  .heritage-footer-copyright {
+    border-top: 2px solid #ce112760;
+    font-size: 14px;
+    font-weight: bold; /* made text bold */
+    padding-top: 30px;
+    text-align: center;
+  }
+  
+  .heritage-footer-copyright p {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 200px;
+    color: #ecf0f1;
+  }
+  /* ============================================
+     RESPONSIVE DESIGN
+     ============================================ */
+  
+  @media (max-width: 768px) {
+    .heritage-site-footer {
+      padding: 40px 15px 15px;
+      margin-top: 60px;
+    }
+  
+    .heritage-footer-wrapper {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+  
+    .heritage-footer-brand {
+      justify-content: center;
+    }
+  
+    .heritage-footer-branding-text {
+      text-align: center;
+    }
+  
+    .heritage-footer-navigation,
+    .heritage-footer-legal {
+      text-align: center;
+    }
+  
+    .heritage-footer-nav-links,
+    .heritage-footer-legal-links {
+      align-items: center;
+    }
+  
+    .heritage-footer-nav-item,
+    .heritage-footer-legal-links a {
+      padding-left: 0;
+      border-left: none;
+      border-bottom: 2px solid transparent;
+    }
+  
+    .heritage-footer-nav-item:hover,
+    .heritage-footer-legal-links a:hover {
+      border-left: none;
+      border-bottom-color: #ffd700;
+      transform: translateX(0);
+    }
+  
+    .heritage-footer-copyright p {
+      font-size: 12px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .heritage-site-footer {
+      padding: 30px 10px 10px;
+      margin-top: 50px;
+    }
+  
+    .heritage-footer-logo {
+      width: 50px;
+      height: 50px;
+    }
+  
+    .heritage-footer-branding-text h4 {
+      font-size: 20px;
+    }
+  
+    .heritage-footer-branding-text p {
+      font-size: 12px;
+    }
+  
+    .heritage-footer-navigation h5,
+    .heritage-footer-legal h5 {
+      font-size: 14px;
+    }
+  
+    .heritage-footer-nav-item,
+    .heritage-footer-legal-links a {
+      font-size: 13px;
+    }
+  
+    .heritage-footer-copyright p {
+      font-size: 11px;
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 @keyframes fadeIn {
   from { opacity: 0; }

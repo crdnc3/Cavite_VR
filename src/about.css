@@ -21,15 +21,43 @@ body.about,
 html.about {
   height: auto;
   overflow: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #2b6cb0 #f1f1f1; /* thumb | track */
+  -ms-overflow-style: auto; /* show scrollbar in Edge/IE */
   margin: 0;
   padding: 0;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   line-height: 1.5;
   color: var(--text-dark);
-  background: var(--ph-white);
+  background: var(--ph-white); /* untouched */
   scroll-behavior: smooth;
+}
+
+/* === Chrome, Edge, Safari === */
+body.about::-webkit-scrollbar,
+html.about::-webkit-scrollbar {
+  width: 12px;
+}
+
+body.about::-webkit-scrollbar-track,
+html.about::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+body.about::-webkit-scrollbar-thumb,
+html.about::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #1a365d 0%, #2b6cb0 50%, #1a365d 100%);
+  border-radius: 10px;
+  border: 2px solid #f1f1f1;
+  transition: all 0.3s ease;
+}
+
+body.about::-webkit-scrollbar-thumb:hover,
+html.about::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #2b6cb0 0%, #63b3ed 50%, #2b6cb0 100%);
+  box-shadow: 0 0 8px rgba(99, 179, 237, 0.6);
+  transform: scaleX(1.1);
 }
 
 .about-container {

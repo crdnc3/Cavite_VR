@@ -1,11 +1,12 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import Sidebar from './Sidebar';
-import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, deleteDoc, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from './firebase';
 import './archive.css';
 
 function Archive() {
   const [archivedReports, setArchivedReports] = useState([]);
+  const [deletedReports, setDeletedReports] = useState([]);
   const [filteredReports, setFilteredReports] = useState([]);
   const [timeFilter, setTimeFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
@@ -14,8 +15,13 @@ function Archive() {
   const [sortOption, setSortOption] = useState('newest');
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedMessage, setSelectedMessage] = useState(null);
+  const [showDeletedModal, setShowDeletedModal] = useState(false);
+  const [restoringId, setRestoringId] = useState(null);
+  const [selectedDeletedIds, setSelectedDeletedIds] = useState([]);
+  const [deletedSortOption, setDeletedSortOption] = useState('newest');
   const itemsPerPage = 10;
 
+  // Fetch archived reports on mount
   useEffect(() => {
     const fetchArchivedReports = async () => {
       try {
@@ -41,6 +47,68 @@ function Archive() {
     };
     fetchArchivedReports();
   }, []);
+
+  // Fetch deleted reports on mount
+  useEffect(() => {
+    const fetchDeletedReports = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'deleted_archive'));
+        const data = querySnapshot.docs.map((doc) => {
+          const d = doc.data();
+          const createdAt =
+            d.createdAt?.toDate?.() ||
+            new Date();
+          return {
+            id: doc.id,
+            email: d.email || 'No email',
+            locationTitle: d.locationTitle || 'No title',
+            reportText: d.reportText || 'No message provided',
+            createdAt,
+          };
+        });
+        setDeletedReports(data);
+      } catch (error) {
+        console.error('Error fetching deleted reports:', error);
+      }
+    };
+    fetchDeletedReports();
+  }, []);
+
+  // Auto-delete old archives (>30 days) - memoized to prevent infinite loops
+  const autoDeleteOldArchives = useCallback(async () => {
+    const now = new Date();
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    
+    const expired = archivedReports.filter(
+      (r) => r.createdAt < thirtyDaysAgo
+    );
+
+    if (expired.length > 0) {
+      try {
+        // Delete from Firebase
+        await Promise.all(
+          expired.map((r) => deleteDoc(doc(db, 'archive', r.id)))
+        );
+        
+        // Update states
+        setDeletedReports((prev) => [...prev, ...expired]);
+        setArchivedReports((prev) => 
+          prev.filter((r) => !expired.some(exp => exp.id === r.id))
+        );
+        
+        console.log(`Auto-deleted ${expired.length} expired reports`);
+      } catch (error) {
+        console.error('Error auto-deleting expired reports:', error);
+      }
+    }
+  }, [archivedReports]);
+
+  // Run auto-delete only once when archivedReports first loads
+  useEffect(() => {
+    if (archivedReports.length > 0) {
+      autoDeleteOldArchives();
+    }
+  }, [archivedReports.length > 0]);
 
   const getDateRange = (filter) => {
     const now = new Date();
@@ -74,9 +142,11 @@ function Archive() {
     }
   };
 
+  // Filter and sort reports
   useEffect(() => {
-    let filtered = archivedReports;
+    let filtered = [...archivedReports];
 
+    // Time filter
     if (timeFilter !== 'all' && timeFilter !== 'custom') {
       const range = getDateRange(timeFilter);
       if (range) {
@@ -87,6 +157,7 @@ function Archive() {
       }
     }
 
+    // Custom date range
     if (timeFilter === 'custom' && customStartDate && customEndDate) {
       const start = new Date(customStartDate);
       const end = new Date(customEndDate);
@@ -96,6 +167,7 @@ function Archive() {
       );
     }
 
+    // Search filter
     if (searchTerm.trim() !== '') {
       filtered = filtered.filter(
         (report) =>
@@ -105,7 +177,7 @@ function Archive() {
       );
     }
 
-    filtered = [...filtered];
+    // Sort
     filtered.sort((a, b) => {
       if (sortOption === 'newest') return b.createdAt - a.createdAt;
       if (sortOption === 'oldest') return a.createdAt - b.createdAt;
@@ -123,6 +195,13 @@ function Archive() {
     const startIndex = (currentPage - 1) * itemsPerPage;
     return filteredReports.slice(startIndex, startIndex + itemsPerPage);
   }, [filteredReports, currentPage]);
+
+  const daysLeftBeforeDeletion = (createdAt) => {
+    const now = new Date();
+    const diff = now - createdAt;
+    const days = 30 - Math.floor(diff / (1000 * 60 * 60 * 24));
+    return days > 0 ? days : 0;
+  };
 
   const exportToCSV = () => {
     const headers = ['Date', 'Email', 'Location', 'Message'];
@@ -147,14 +226,164 @@ function Archive() {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to permanently delete this report?')) return;
+    if (!window.confirm('Are you sure you want to delete this report?')) return;
     try {
+      const deletedItem = archivedReports.find(r => r.id === id);
+      
+      // Save to 'deleted_archive' collection
+      const docRef = await addDoc(collection(db, 'deleted_archive'), {
+        email: deletedItem.email,
+        locationTitle: deletedItem.locationTitle,
+        reportText: deletedItem.reportText,
+        createdAt: deletedItem.createdAt,
+        deletedAt: serverTimestamp()
+      });
+      
+      // Remove from archive
       await deleteDoc(doc(db, 'archive', id));
       setArchivedReports(prev => prev.filter(r => r.id !== id));
+      
+      // Add to deletedReports state immediately
+      setDeletedReports(prev => [...prev, {
+        id: docRef.id,
+        email: deletedItem.email,
+        locationTitle: deletedItem.locationTitle,
+        reportText: deletedItem.reportText,
+        createdAt: deletedItem.createdAt
+      }]);
+      
+      alert('Report deleted successfully');
     } catch (error) {
       console.error('Delete failed', error);
+      alert('Failed to delete report. Please try again.');
     }
   };
+
+  // Restore = ibalik sa archive collection
+  const handleRestore = async (report) => {
+    try {
+      setRestoringId(report.id);
+
+      // 1. Save back to archive collection
+      await addDoc(collection(db, "archive"), {
+        email: report.email,
+        locationTitle: report.locationTitle,
+        reportText: report.reportText,
+        createdAt: serverTimestamp(),
+      });
+
+      // 2. Delete from deleted_archive collection
+      await deleteDoc(doc(db, 'deleted_archive', report.id));
+
+      // 3. Update UI - remove from deleted reports list and add back to archived
+      setDeletedReports((prev) => prev.filter((r) => r.id !== report.id));
+      setArchivedReports((prev) => [...prev, {
+        ...report,
+        createdAt: new Date() // Update with current date since restored
+      }]);
+
+      alert("Report restored to archive!");
+    } catch (error) {
+      console.error("Error restoring report:", error);
+      alert("Failed to restore report");
+    } finally {
+      setRestoringId(null);
+    }
+  };
+
+  // Bulk restore selected deleted reports
+  const handleBulkRestore = async () => {
+    if (selectedDeletedIds.length === 0) {
+      alert('Please select reports to restore');
+      return;
+    }
+
+    if (!window.confirm(`Are you sure you want to restore ${selectedDeletedIds.length} report(s)?`)) return;
+
+    try {
+      const reportsToRestore = deletedReports.filter(r => selectedDeletedIds.includes(r.id));
+      
+      await Promise.all(
+        reportsToRestore.map(async (report) => {
+          // Add back to archive
+          await addDoc(collection(db, "archive"), {
+            email: report.email,
+            locationTitle: report.locationTitle,
+            reportText: report.reportText,
+            createdAt: serverTimestamp(),
+          });
+          // Delete from deleted_archive
+          await deleteDoc(doc(db, 'deleted_archive', report.id));
+        })
+      );
+
+      // Update UI
+      setDeletedReports((prev) => prev.filter((r) => !selectedDeletedIds.includes(r.id)));
+      setArchivedReports((prev) => [...prev, ...reportsToRestore.map(r => ({
+        ...r,
+        createdAt: new Date()
+      }))]);
+      setSelectedDeletedIds([]);
+
+      alert(`${reportsToRestore.length} report(s) restored successfully!`);
+    } catch (error) {
+      console.error("Error bulk restoring:", error);
+      alert("Failed to restore some reports");
+    }
+  };
+
+  // Bulk permanently delete selected deleted reports
+  const handleBulkPermanentDelete = async () => {
+    if (selectedDeletedIds.length === 0) {
+      alert('Please select reports to delete permanently');
+      return;
+    }
+
+    if (!window.confirm(`Are you sure you want to PERMANENTLY delete ${selectedDeletedIds.length} report(s)? This cannot be undone!`)) return;
+
+    try {
+      await Promise.all(
+        selectedDeletedIds.map(id => deleteDoc(doc(db, 'deleted_archive', id)))
+      );
+
+      setDeletedReports((prev) => prev.filter((r) => !selectedDeletedIds.includes(r.id)));
+      setSelectedDeletedIds([]);
+
+      alert('Reports permanently deleted!');
+    } catch (error) {
+      console.error("Error bulk deleting:", error);
+      alert("Failed to delete some reports");
+    }
+  };
+
+  // Toggle individual checkbox
+  const toggleDeletedCheckbox = (id) => {
+    setSelectedDeletedIds(prev => 
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
+  };
+
+  // Toggle select all checkboxes
+  const toggleSelectAllDeleted = () => {
+    if (selectedDeletedIds.length === sortedDeletedReports.length) {
+      setSelectedDeletedIds([]);
+    } else {
+      setSelectedDeletedIds(sortedDeletedReports.map(r => r.id));
+    }
+  };
+
+  // Sort deleted reports
+  const sortedDeletedReports = useMemo(() => {
+    const sorted = [...deletedReports];
+    sorted.sort((a, b) => {
+      if (deletedSortOption === 'newest') return b.createdAt - a.createdAt;
+      if (deletedSortOption === 'oldest') return a.createdAt - b.createdAt;
+      if (deletedSortOption === 'email') return a.email.localeCompare(b.email);
+      if (deletedSortOption === 'location') return a.locationTitle.localeCompare(b.locationTitle);
+      return 0;
+    });
+    return sorted;
+  }, [deletedReports, deletedSortOption]);
 
   const highlightText = (text) => {
     if (!searchTerm) return text;
@@ -203,6 +432,7 @@ function Archive() {
           </select>
 
           <button onClick={exportToCSV}>Export CSV</button>
+          <button className="view-deleted-btn" onClick={() => setShowDeletedModal(true)}>View Deleted</button>
         </div>
 
         {paginatedReports.length === 0 ? (
@@ -214,11 +444,12 @@ function Archive() {
                 <div><strong>Date:</strong> {highlightText(report.createdAt.toLocaleString())}</div>
                 <div><strong>Email:</strong> {highlightText(report.email)}</div>
                 <div><strong>Location:</strong> {highlightText(report.locationTitle)}</div>
+                <div><strong>Days Left:</strong> {daysLeftBeforeDeletion(report.createdAt)} days</div>
                 <div>
                   <strong>Message:</strong>{' '}
                   {report.reportText.length > 120 ? (
                     <>
-                      {report.reportText.slice(0, 120)}...
+                      {highlightText(report.reportText.slice(0, 120))}...
                       <button
                         className="archive-modal-open-btn"
                         onClick={() => setSelectedMessage(report.reportText)}
@@ -227,7 +458,7 @@ function Archive() {
                       </button>
                     </>
                   ) : (
-                    report.reportText
+                    highlightText(report.reportText)
                   )}
                 </div>
                 <button className="del-btn" onClick={() => handleDelete(report.id)}>Delete</button>
@@ -244,24 +475,102 @@ function Archive() {
           </div>
         )}
 
-        {/* Modal for full message */}
+        {/* Full message modal */}
         {selectedMessage && (
-          <div
-            className="archive-modal-backdrop"
-            onClick={() => setSelectedMessage(null)}
-          >
-            <div
-              className="archive-modal-content"
-              onClick={(e) => e.stopPropagation()}
-            >
+          <div className="archive-modal-backdrop" onClick={() => setSelectedMessage(null)}>
+            <div className="archive-modal-content" onClick={(e) => e.stopPropagation()}>
               <h3>Full Feedback Message</h3>
               <p>{selectedMessage}</p>
-              <button
-                className="archive-modal-close-btn"
-                onClick={() => setSelectedMessage(null)}
-              >
-                Close
-              </button>
+              <button className="archive-modal-close-btn" onClick={() => setSelectedMessage(null)}>Close</button>
+            </div>
+          </div>
+        )}
+
+        {/* Deleted reports modal */}
+        {showDeletedModal && (
+          <div className="archive-modal-backdrop" onClick={() => setShowDeletedModal(false)}>
+            <div className="archive-deleted-modal-content" onClick={(e) => e.stopPropagation()}>
+              <h3>Deleted Reports</h3>
+              
+              <div className="archive-deleted-modal-controls">
+                <select 
+                  className="archive-deleted-sort-select"
+                  value={deletedSortOption} 
+                  onChange={e => setDeletedSortOption(e.target.value)}
+                >
+                  <option value="newest">Sort: Newest</option>
+                  <option value="oldest">Sort: Oldest</option>
+                  <option value="email">Sort: Email</option>
+                  <option value="location">Sort: Location</option>
+                </select>
+
+                {selectedDeletedIds.length > 0 && (
+                  <div className="archive-deleted-bulk-actions">
+                    <button 
+                      className="archive-deleted-bulk-restore-btn"
+                      onClick={handleBulkRestore}
+                    >
+                      Restore ({selectedDeletedIds.length})
+                    </button>
+                    <button 
+                      className="archive-deleted-bulk-delete-btn"
+                      onClick={handleBulkPermanentDelete}
+                    >
+                      Delete Permanently ({selectedDeletedIds.length})
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {sortedDeletedReports.length === 0 ? (
+                <p>No deleted reports yet.</p>
+              ) : (
+                <>
+                  <div className="archive-deleted-select-all">
+                    <label>
+                      <input 
+                        type="checkbox"
+                        checked={selectedDeletedIds.length === sortedDeletedReports.length && sortedDeletedReports.length > 0}
+                        onChange={toggleSelectAllDeleted}
+                      />
+                      Select All
+                    </label>
+                  </div>
+                  <ul className="archive-deleted-list">
+                    {sortedDeletedReports.map((r) => (
+                      <li key={r.id} className="archive-deleted-item">
+                        <div className="archive-deleted-checkbox-wrapper">
+                          <input 
+                            type="checkbox"
+                            checked={selectedDeletedIds.includes(r.id)}
+                            onChange={() => toggleDeletedCheckbox(r.id)}
+                            className="archive-deleted-checkbox"
+                          />
+                        </div>
+                        <div className="archive-deleted-content">
+                          <p><strong>Date:</strong> {r.createdAt.toLocaleString()}</p>
+                          <p><strong>Email:</strong> {r.email}</p>
+                          <p><strong>Location:</strong> {r.locationTitle}</p>
+                          <p><strong>Message:</strong> {r.reportText}</p>
+                        </div>
+                        <div className="archive-deleted-actions">
+                          <button 
+                            className="archive-deleted-restore-btn"
+                            onClick={() => handleRestore(r)}
+                            disabled={restoringId === r.id}
+                          >
+                            {restoringId === r.id ? 'Restoring...' : 'Restore'}
+                          </button>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
+              <button className="archive-modal-close-btn" onClick={() => {
+                setShowDeletedModal(false);
+                setSelectedDeletedIds([]);
+              }}>Close</button>
             </div>
           </div>
         )}
