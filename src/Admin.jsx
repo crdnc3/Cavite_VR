@@ -251,41 +251,38 @@ function Admin() {
 
 
 
-  // Fetch landmarks data
   const fetchLandmarks = async () => {
+    setIsLoadingLandmarks(true);
     try {
-      setIsLoadingLandmarks(true);
-      const querySnapshotLandmarks = await getDocs(collection(db, 'Landmarks'));
-      
-      const landmarksArray = querySnapshotLandmarks.docs.map((doc) => {
+      const querySnapshot = await getDocs(collection(db, "TotalViews"));
+  
+      const landmarksArray = querySnapshot.docs.map((doc) => {
         const data = doc.data();
-        
         return {
           id: doc.id,
-          name: data.name || data.title || data.placeName || data.landmarkName || doc.id || 'Unknown Landmark',
-          views: data.TotalVisits || data.totalVisits || data.visits || data.views || 0,
-          location: data.location || data.address || '',
-          description: data.description || data.desc || '',
-          createdAt: data.createdAt ? data.createdAt.toDate().toLocaleString() : 'No date',
+          name: data.name || doc.id,
+          views: data.views || 0,
         };
       });
-
+  
+      // Sort by views descending
       landmarksArray.sort((a, b) => b.views - a.views);
-
+  
       setLandmarksData(landmarksArray);
       setTotalPlaces(landmarksArray.length);
-      
       toast.success('Landmarks data loaded successfully');
     } catch (error) {
       console.error('Error fetching landmarks:', error);
       toast.error('Error fetching landmarks data');
-      
       setLandmarksData([]);
       setTotalPlaces(0);
     } finally {
       setIsLoadingLandmarks(false);
     }
   };
+  
+  
+  
 
 
 
