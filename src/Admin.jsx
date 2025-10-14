@@ -1451,7 +1451,6 @@ function Admin() {
                   </div>
                   <div className="activity-text">
                     <strong>Email:</strong> {report.email} <br />
-                    <strong>Location:</strong> {report.locationTitle} <br />
                     <strong>Message:</strong> {report.reportText}
                   </div>
                 </div>

@@ -26,7 +26,7 @@ function Sidebar() {
     <>
       <div className="sidebar">
         <div className="logo">
-          C:VR.<span>Nexus</span>
+          C:VR.<span>Admin</span>
         </div>
         <ul className="menu">
           <li onClick={() => navigate('/Admin')}>
