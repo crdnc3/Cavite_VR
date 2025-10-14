@@ -35,7 +35,6 @@ function Archive() {
           return {
             id: doc.id,
             email: d.email || 'No email',
-            locationTitle: d.locationTitle || 'No title',
             reportText: d.reportText || 'No message provided',
             createdAt,
           };
@@ -379,7 +378,6 @@ function Archive() {
       if (deletedSortOption === 'newest') return b.createdAt - a.createdAt;
       if (deletedSortOption === 'oldest') return a.createdAt - b.createdAt;
       if (deletedSortOption === 'email') return a.email.localeCompare(b.email);
-      if (deletedSortOption === 'location') return a.locationTitle.localeCompare(b.locationTitle);
       return 0;
     });
     return sorted;
@@ -419,7 +417,7 @@ function Archive() {
 
           <input
             type="text"
-            placeholder="Search by keyword, email, or location"
+            placeholder="Search by keyword or email"
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
           />
@@ -428,7 +426,6 @@ function Archive() {
             <option value="newest">Sort: Newest</option>
             <option value="oldest">Sort: Oldest</option>
             <option value="email">Sort: Email</option>
-            <option value="location">Sort: Location</option>
           </select>
 
           <button onClick={exportToCSV}>Export CSV</button>
@@ -443,7 +440,6 @@ function Archive() {
               <li key={report.id} className="archive-report-card">
                 <div><strong>Date:</strong> {highlightText(report.createdAt.toLocaleString())}</div>
                 <div><strong>Email:</strong> {highlightText(report.email)}</div>
-                <div><strong>Location:</strong> {highlightText(report.locationTitle)}</div>
                 <div><strong>Days Left:</strong> {daysLeftBeforeDeletion(report.createdAt)} days</div>
                 <div>
                   <strong>Message:</strong>{' '}
@@ -501,7 +497,6 @@ function Archive() {
                   <option value="newest">Sort: Newest</option>
                   <option value="oldest">Sort: Oldest</option>
                   <option value="email">Sort: Email</option>
-                  <option value="location">Sort: Location</option>
                 </select>
 
                 {selectedDeletedIds.length > 0 && (
@@ -550,7 +545,6 @@ function Archive() {
                         <div className="archive-deleted-content">
                           <p><strong>Date:</strong> {r.createdAt.toLocaleString()}</p>
                           <p><strong>Email:</strong> {r.email}</p>
-                          <p><strong>Location:</strong> {r.locationTitle}</p>
                           <p><strong>Message:</strong> {r.reportText}</p>
                         </div>
                         <div className="archive-deleted-actions">
