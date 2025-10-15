@@ -272,32 +272,32 @@
     margin-bottom: 1.5rem;
   }
   
-  .modal-icon {
+  .navbar-modal-icon {
     width: 48px;
     height: 48px;
-    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    background: linear-gradient(135deg, #2b77cb, #1a365d);
     border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
   }
   
-  .modal-icon svg {
+  .navbar-modal-icon svg {
     width: 24px;
     height: 24px;
     color: #d97706;
     stroke-width: 2;
   }
   
-  .logout-modal h3 {
+  .navbar-logout-modal h3 {
     margin: 0;
     font-size: 1.25rem;
     font-weight: 700;
     color: #0f172a;
   }
   
-  .logout-modal p {
-    color: #64748b;
+  .navbar-logout-modal p {
+    color: #000000;
     font-size: 0.875rem;
     line-height: 1.6;
     margin: 0 0 2rem 0;

@@ -116,7 +116,7 @@ const NavBar = ({ searchTerm, setSearchTerm }) => {
         <div className="modal-backdrop">
           <div className="navbar-logout-modal">
             <div className="navbar-modal-header">
-              <div className="modal-icon">
+              <div className="navbar-modal-icon">
                 <i className="fas fa-sign-out-alt"></i>
               </div>
               <h3>Sign Out</h3>
