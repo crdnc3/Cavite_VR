@@ -169,12 +169,68 @@ section.hero-section::after {
     z-index: 2;
 }
 
-.google-play-button {
-    background: var(--primary-gradient);
-    color: white;
-    box-shadow: var(--shadow-soft);
-    border: 2px solid transparent;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.download-apk-button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, #2b77cb, #1a365d);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  }
+  
+  .download-apk-button:hover {
+    background-color: #25482b; /* dark forest green */
+    transform: scale(1.05);
+  }
+  
+  .download-apk-button:active {
+    background-color: #1b3721;
+    transform: scale(0.98);
+  }
+  
+  .download-apk-icon {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+  }
+  
+
+
+
+
+
+
+
+
+
+
+
+
 
 .google-play-button:hover {
     transform: translateY(-4px) scale(1.02);
@@ -186,22 +242,29 @@ section.hero-section::after {
 }
 
 .lgn-btn {
-    background: rgba(255, 255, 255, 0.9);
-    color: #1e293b;
-    border: 2px solid rgba(102, 126, 234, 0.2);
-    backdrop-filter: blur(20px);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, #2b77cb, #1a365d);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 24px 50px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
 }
 
 .lgn-btn:hover {
-    background: rgba(255, 255, 255, 1);
     transform: translateY(-4px) scale(1.02);
-    border-color: rgba(102, 126, 234, 0.4);
-    box-shadow: var(--shadow-soft);
+    box-shadow: 0 30px 80px rgba(102, 126, 234, 0.4);
 }
 
 .google-play-icon {
-    width: 24px;
-    height: 24px;
+    width: 40px;
+    height: 40px;
     transition: var(--transition);
 }
 

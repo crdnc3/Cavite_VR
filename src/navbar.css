@@ -254,7 +254,7 @@
     animation: fadeIn 0.3s ease;
   }
   
-  .logout-modal {
+  .navbar-logout-modal {
     background: #ffffff;
     border-radius: 20px;
     padding: 2rem;
@@ -265,7 +265,7 @@
     animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
   
-  .modal-header {
+  .navbar-modal-header {
     display: flex;
     align-items: center;
     gap: 1rem;

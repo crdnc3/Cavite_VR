@@ -8,11 +8,12 @@ import cblu from './assets/images/cblu.png';
 import cbluu from './assets/images/cbluu.png';
 import cred from './assets/images/cred.png';
 import gplay from './assets/images/gplay.png';
-import bonifacio from './assets/videos/bonifacio.mp4';
+import bonifacio from './assets/videos/LP_BTH.mp4';
 import imus from './assets/videos/imus.mp4';
 import alapan from './assets/videos/alapan.mp4';
 import zapote from './assets/videos/zapote.mp4';
 import baldomero from './assets/videos/baldomero.mp4';
+import applogo from './assets/images/justlogo.png';
 
 
 const videoData = [
@@ -50,10 +51,19 @@ const LandingPage = () => {
                         Step into the past and explore Cavite’s rich heritage through immersive virtual reality. Cavite VR brings historical landmarks to life, allowing you to walk through centuries-old churches, iconic battle sites, and cultural treasures—all from the comfort of your device.
                     </p>
                     <div className="hero-buttons">
-                        <button className="google-play-button">
-                            <img src={gplay} alt="Google Play" className="google-play-icon" />
-                            Get it on Google Play
+                    <button
+                        className="download-apk-button"
+                        onClick={() => {
+                            window.open(
+                            "https://github.com/Marvin-Atienza/CaviteVR/releases/download/v0.1.8/CaviteVR_v0.1.8.apk",
+                            "_blank"
+                            );
+                        }}
+                        >
+                        <img src={applogo} alt="Google Play" className="download-apk-icon" />
+                        Download the APK
                         </button>
+
                         <button className="lgn-btn" onClick={handleLoginClick}>
                             Log In
                         </button>

@@ -114,8 +114,8 @@ const NavBar = ({ searchTerm, setSearchTerm }) => {
       {/* Logout Confirmation Modal */}
       {showLogoutConfirm && (
         <div className="modal-backdrop">
-          <div className="logout-modal">
-            <div className="modal-header">
+          <div className="navbar-logout-modal">
+            <div className="navbar-modal-header">
               <div className="modal-icon">
                 <i className="fas fa-sign-out-alt"></i>
               </div>
