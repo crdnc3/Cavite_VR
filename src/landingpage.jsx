@@ -9,10 +9,10 @@ import cbluu from './assets/images/cbluu.png';
 import cred from './assets/images/cred.png';
 import gplay from './assets/images/gplay.png';
 import bonifacio from './assets/videos/LP_BTH.mp4';
-import imus from './assets/videos/imus.mp4';
-import alapan from './assets/videos/alapan.mp4';
+import imus from './assets/videos/LP_IB.mp4';
+import alapan from './assets/videos/LP_BoAS.mp4';
 import zapote from './assets/videos/zapote.mp4';
-import baldomero from './assets/videos/baldomero.mp4';
+import baldomero from './assets/videos/LP_BAS.mp4';
 import applogo from './assets/images/justlogo.png';
 
 
