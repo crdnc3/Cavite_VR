@@ -9,15 +9,20 @@ import newestlogo from './assets/images/newestlogo.png';
 import newerbg from './assets/images/newerbg.png';
 
 const regions = [
+  "National Capital Region (NCR)",
   "Ilocos Region (Region I)",
   "Cagayan Valley (Region II)",
   "Central Luzon (Region III)",
   "CALABARZON (Region IV-A)",
   "MIMAROPA (Region IV-B)",
   "Bicol Region (Region V)",
+  "CAR",
+
   "Western Visayas (Region VI)",
   "Central Visayas (Region VII)",
   "Eastern Visayas (Region VIII)",
+  "Negros Island Region (NIR)",
+
   "Zamboanga Peninsula (Region IX)",
   "Northern Mindanao (Region X)",
   "Davao Region (Region XI)",
@@ -27,21 +32,28 @@ const regions = [
 ];
 
 const regionPlaces = {
-  "Ilocos Region (Region I)": ["Laoag City", "Vigan", "San Fernando"],
-  "Cagayan Valley (Region II)": ["Tuguegarao", "Ilagan", "Sanchez Mira"],
-  "Central Luzon (Region III)": ["Angeles City", "San Fernando", "Tarlac City"],
+  "National Capital Region (NCR)": ["Caloocan", "Las Piñas", "Makati", "Malabon", "Mandaluyong", "Manila", "Marikina", "Muntinlupa", "Navotas", "Parañaque", "Pasay", "Pasig", "Pateros", "Quezon City", "San Juan", "Taguig", "Valenzuela"],
+  "Ilocos Region (Region I)": ["Ilocos Norte", "Ilocos Sur", "La Union", "Pangasinan"],
+  "Cagayan Valley (Region II)": ["Batanes", "Cagayan", "Isabela", "Nueva Vizcaya", "Quirino"],
+  "Central Luzon (Region III)": ["Aurora", "Bataan", "Bulacan", "Nueva Ecija", "Pampanga", "Tarlac", "Zambales"],
   "CALABARZON (Region IV-A)": ["Cavite", "Laguna", "Batangas", "Rizal", "Quezon"],
-  "MIMAROPA (Region IV-B)": ["Puerto Princesa", "Calapan", "Roxas"],
-  "Bicol Region (Region V)": ["Legazpi", "Naga", "Sorsogon"],
-  "Western Visayas (Region VI)": ["Iloilo City", "Bacolod", "Guimaras"],
-  "Central Visayas (Region VII)": ["Cebu City", "Lapu-Lapu", "Dumaguete"],
-  "Eastern Visayas (Region VIII)": ["Tacloban", "Ormoc", "Baybay"],
-  "Zamboanga Peninsula (Region IX)": ["Zamboanga City", "Pagadian", "Dipolog"],
-  "Northern Mindanao (Region X)": ["Cagayan de Oro", "Iligan", "Gingoog"],
-  "Davao Region (Region XI)": ["Davao City", "Tagum", "Panabo"],
-  "SOCCSKSARGEN (Region XII)": ["General Santos", "Koronadal", "Kidapawan"],
-  "Caraga (Region XIII)": ["Butuan", "Surigao", "Tandag"],
-  "Bangsamoro Autonomous Region (BARMM)": ["Cotabato City", "Marawi", "Lamitan"]
+  "MIMAROPA (Region IV-B)": ["Marinduque", "Occidental Mindoro", "Oriental Mindoro", "Palawan", "Romblon"],
+  "Bicol Region (Region V)": ["Albay", "Camarines Norte", "Camarines Sur", "Catanduanes", "Masbate", "Sorsogon"],
+  "CAR": ["Abra", "Apayao", "Benguet", "Ifugao", "Kalinga", "Mountain Province"],
+
+
+  "Western Visayas (Region VI)": ["Aklan", "Antique", "Capiz", "Guimaras", "Iloilo"],
+  "Central Visayas (Region VII)": ["Bohol", "Cebu"],
+  "Negros Island Region (NIR)": ["Negros occidental", "Negros Oriental", "Siquijor"],
+  "Eastern Visayas (Region VIII)": ["Biliran", "Eastern Samar", "Leyte", "Northern Samar", "Samar", "Southern Leyte"],
+
+  
+  "Zamboanga Peninsula (Region IX)": ["Zamboanga Del Norte", "Zamboanga Del Sur", "Zamboanga Sibugay", "Zamboanga City", "Isabela City"],
+  "Northern Mindanao (Region X)": ["Bukidnon", "Camiguin", "Lanao Del Norte", "Misamis Occidental", "Misamis Oriental"],
+  "Davao Region (Region XI)": ["Davao De Oro", "Davao Del Norte", "Davao Del Sur", "Davao Occidental", "Davao Oriental"],
+  "SOCCSKSARGEN (Region XII)": ["Cotabato", "Sarangani", "South Cotabato", "Sultan Kudarat"],
+  "Caraga (Region XIII)": ["Agusan Del Norte", "Agusan Del Sur", "Dinagat Islands", "Surigao Del Norte", "Surigao Del Sur"],
+  "Bangsamoro Autonomous Region (BARMM)": ["Basilan", "Lanao Del Sur", "Maguinadanao", "Sulu", "Tawi-Tawi"]
 };
 
 const Register = () => {
