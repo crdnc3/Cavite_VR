@@ -11,6 +11,7 @@ import car_eas from './assets/images/car_eas.png';
 import car_ib from './assets/images/car_ib.png';
 import car_shrine from './assets/images/car_shrine.png';
 import car_zp from './assets/images/car_zp.png';
+import collage from './assets/images/newerbg.png';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const About = () => {
@@ -84,7 +85,7 @@ const About = () => {
       <section className="hera-section">
         <div className="hera-content">
           <img
-            src={kapitolyo}
+            src={collage}
             alt="Cavite Historical Landmark"
             className="hera-image"
           />
