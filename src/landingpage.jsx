@@ -11,8 +11,10 @@ import gplay from './assets/images/gplay.png';
 import bonifacio from './assets/videos/LP_BTH.mp4';
 import imus from './assets/videos/LP_IB.mp4';
 import alapan from './assets/videos/LP_BoAS.mp4';
-import zapote from './assets/videos/zapote.mp4';
+import zapote from './assets/videos/LP_ZP.mp4';
 import baldomero from './assets/videos/LP_BAS.mp4';
+import casa from './assets/videos/LP_CASA.mp4';
+import parish from './assets/videos/LP_PCOSC.mp4';
 import applogo from './assets/images/justlogo.png';
 
 
@@ -22,6 +24,8 @@ const videoData = [
     { src: alapan, title: 'Battle of Alapan Site' },
     { src: zapote, title: 'Zapote Battlefield' },
     { src: baldomero, title: 'Baldomero Aguinaldo Shrine' },
+    { src: casa, title: 'Casa Hacienda de Tejeros' },
+    { src: parish, title: 'Parish Church of Sta. Cruz' }
 ];
 
 const LandingPage = () => {
