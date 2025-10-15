@@ -311,6 +311,7 @@ const ContentManager = () => {
 
               <div className="form-grid">
                 <select
+                required
                   className="form-select"
                   value={formData.type}
                   onChange={(e) => setFormData({ ...formData, type: e.target.value })}
@@ -321,6 +322,7 @@ const ContentManager = () => {
                   ))}
                 </select>
                 <input
+                required
                   placeholder="Location"
                   className="form-input"
                   value={formData.location}
@@ -329,6 +331,7 @@ const ContentManager = () => {
               </div>
 
               <textarea
+              required
                 placeholder="Short Description"
                 rows={2}
                 className="form-textarea"
@@ -337,6 +340,7 @@ const ContentManager = () => {
               />
 
               <textarea
+              required
                 placeholder="Full Description"
                 rows={3}
                 className="form-textarea"
@@ -351,12 +355,16 @@ const ContentManager = () => {
                   type="text"
                   placeholder="Paste image URL and press Enter"
                   value={imageInput}
+                  required
                   onChange={(e) => setImageInput(e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       e.preventDefault();
                       if (imageInput.trim() !== "") {
-                        setFormData({ ...formData, images: [...formData.images, imageInput.trim()] });
+                        setFormData({
+                          ...formData,
+                          images: [...formData.images, imageInput.trim()],
+                        });
                         setImageInput("");
                       }
                     }
@@ -392,19 +400,24 @@ const ContentManager = () => {
                 </div>
               </div>
 
+
               {/* Map Embed Link Field */}
               <input
                 placeholder="Google Map Embed Link"
                 className="google-form"
                 value={formData.mapLink}
-                onChange={(e) => setFormData({ ...formData, mapLink: e.target.value })}
+                required
+                onChange={(e) =>
+                  setFormData({ ...formData, mapLink: e.target.value })
+                }
               />
+
               {formData.mapLink && (
                 <iframe
                   src={formData.mapLink}
                   width="100%"
                   height="200"
-                  style={{ border: 0, marginTop: '10px', borderRadius: '8px' }}
+                  style={{ border: 0, marginTop: "10px", borderRadius: "8px" }}
                   allowFullScreen=""
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
@@ -412,14 +425,17 @@ const ContentManager = () => {
                 />
               )}
 
+
               <div className="form-grid">
                 <input
+                required
                   placeholder="Operating Hours"
                   className="form-input"
                   value={formData.details.hours}
                   onChange={(e) => setFormData({ ...formData, details: { ...formData.details, hours: e.target.value } })}
                 />
                 <input
+                required
                   placeholder="Entrance Fee"
                   className="form-input"
                   value={formData.details.fee}
@@ -429,12 +445,14 @@ const ContentManager = () => {
 
               <div className="form-grid">
                 <input
+                required
                   placeholder="Founded"
                   className="form-input"
                   value={formData.details.founded}
                   onChange={(e) => setFormData({ ...formData, details: { ...formData.details, founded: e.target.value } })}
                 />
                 <input
+                required
                   placeholder="Architecture"
                   className="form-input"
                   value={formData.details.architecture}
@@ -443,6 +461,7 @@ const ContentManager = () => {
               </div>
 
               <textarea
+              required
                 placeholder="Historical Significance"
                 className="form-textarea"
                 value={formData.details.significance}
@@ -450,6 +469,7 @@ const ContentManager = () => {
               />
 
               <textarea
+              required
                 placeholder="Historical Note"
                 className="form-textarea"
                 value={formData.details.historicalNote}
@@ -457,6 +477,7 @@ const ContentManager = () => {
               />
 
               <textarea
+              required
                 placeholder="Transportation / How to get there"
                 className="form-textarea"
                 value={formData.details.transportation}
