@@ -981,7 +981,8 @@ body {
   background: var(--gray-50);
   border-radius: var(--border-radius-md);
   padding: 20px;
-  margin: 20px 0;
+  margin-top: -10px;
+  margin-bottom: -20px;
   border: 1px solid var(--gray-200);
 }
 
@@ -1294,10 +1295,25 @@ body {
   border: 1px solid #e9ecef;
 }
 
+.print-custom-date-section {
+  margin: 15px 0;
+  margin-top: -30px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
 .date-inputs {
   display: flex;
   gap: 15px;
   margin-bottom: 15px;
+}
+
+.print-date-inputs {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 1px;
 }
 
 .date-input-group {
@@ -1342,6 +1358,20 @@ body {
   filter: url(#redGlow);
   color: white;
   padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.print-btn-apply-date {
+  background: #CE1126;
+  filter: url(#redGlow);
+  color: white;
+  padding: 8px 16px;
+  margin-top: 10px;
+  margin-bottom: -20px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
