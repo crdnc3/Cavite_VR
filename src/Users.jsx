@@ -229,7 +229,7 @@ function Users() {
       <Sidebar />
       <div className="main-content">
         <div className="page-header">
-          <h2 className="page-title">User Management</h2>
+          <h2 className="users-title">User Management</h2>
           <div className="page-stats">
             <span className="user-count">Total: {users.length} users</span>
             <button 
@@ -456,7 +456,7 @@ function Users() {
                                 Edit
                               </button>
                               <button
-                                className="action-btn delete-btn"
+                                className="action-btn user-delete-btn"
                                 onClick={() => handleDeleteUser(user.id)}
                                 title="Delete user"
                               >

@@ -168,13 +168,20 @@ function Archive() {
 
     // Search filter
     if (searchTerm.trim() !== '') {
-      filtered = filtered.filter(
-        (report) =>
-          report.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          report.locationTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          report.reportText.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+      const lowerSearch = searchTerm.toLowerCase();
+      filtered = filtered.filter((report) => {
+        const email = report.email?.toLowerCase() || '';
+        const locationTitle = report.locationTitle?.toLowerCase() || '';
+        const reportText = report.reportText?.toLowerCase() || '';
+    
+        return (
+          email.includes(lowerSearch) ||
+          locationTitle.includes(lowerSearch) ||
+          reportText.includes(lowerSearch)
+        );
+      });
     }
+    
 
     // Sort
     filtered.sort((a, b) => {
@@ -203,11 +210,10 @@ function Archive() {
   };
 
   const exportToCSV = () => {
-    const headers = ['Date', 'Email', 'Location', 'Message'];
+    const headers = ['Date', 'Email', 'Questions'];
     const rows = filteredReports.map(r => [
       r.createdAt.toLocaleString(),
       r.email,
-      r.locationTitle,
       r.reportText.replace(/\n/g, ' ')
     ]);
     let csvContent = 'data:text/csv;charset=utf-8,';
@@ -232,7 +238,6 @@ function Archive() {
       // Save to 'deleted_archive' collection
       const docRef = await addDoc(collection(db, 'deleted_archive'), {
         email: deletedItem.email,
-        locationTitle: deletedItem.locationTitle,
         reportText: deletedItem.reportText,
         createdAt: deletedItem.createdAt,
         deletedAt: serverTimestamp()
@@ -246,7 +251,6 @@ function Archive() {
       setDeletedReports(prev => [...prev, {
         id: docRef.id,
         email: deletedItem.email,
-        locationTitle: deletedItem.locationTitle,
         reportText: deletedItem.reportText,
         createdAt: deletedItem.createdAt
       }]);
@@ -486,7 +490,7 @@ function Archive() {
         {showDeletedModal && (
           <div className="archive-modal-backdrop" onClick={() => setShowDeletedModal(false)}>
             <div className="archive-deleted-modal-content" onClick={(e) => e.stopPropagation()}>
-              <h3>Deleted Reports</h3>
+              <h3>Deleted Questions</h3>
               
               <div className="archive-deleted-modal-controls">
                 <select 
@@ -518,7 +522,7 @@ function Archive() {
               </div>
 
               {sortedDeletedReports.length === 0 ? (
-                <p>No deleted reports yet.</p>
+                <p>No deleted questions yet.</p>
               ) : (
                 <>
                   <div className="archive-deleted-select-all">

@@ -908,7 +908,7 @@ function Admin() {
           </div>
 
           <div className="admin-card admin-total-reports" onClick={() => setShowReportModal(true)}>
-            <h3>Total Feedbacks</h3>
+            <h3>Total Questions</h3>
             <p className="admin-number">{reports.length}</p>
           </div>
 
@@ -924,7 +924,7 @@ function Admin() {
           </div>
 
           <div className="admin-card admin-total-places">
-            <h3>Places Uploaded</h3>
+            <h3>Places created (App)</h3>
             <p className="admin-number">{totalPlaces}</p>
           </div>
         </div>
@@ -1238,8 +1238,8 @@ function Admin() {
 
             {/* Custom Date Picker for Print */}
             {printShowCustomDatePicker && (
-              <div className="custom-date-section">
-                <div className="date-inputs">
+              <div className="print-custom-date-section">
+                <div className="print-date-inputs">
                   <div className="date-input-group">
                     <label htmlFor="print-start-date" className="date-label">Start Date:</label>
                     <input
@@ -1265,7 +1265,7 @@ function Admin() {
                 </div>
                 <button 
                   onClick={applyPrintCustomDateFilter}
-                  className="btn-apply-date"
+                  className="print-btn-apply-date"
                 >
                   Apply Custom Range
                 </button>
@@ -1435,7 +1435,7 @@ function Admin() {
       {showReportModal && (
         <div className="modal-overlay" onClick={() => setShowReportModal(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h3>Submitted Feedbacks</h3>
+            <h3>Submitted Questions</h3>
             <div className="modal-scrollable">
               {reports.map((report) => (
                 <div key={report.id} className="activity-card reports-card">

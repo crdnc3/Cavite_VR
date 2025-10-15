@@ -147,7 +147,7 @@ const Register = () => {
     } else setRegionError('');
 
     if (!selectedPlace) {
-      setPlaceError('Please select your place');
+      setPlaceError('Please select your province/city');
       valid = false;
     } else setPlaceError('');
 
@@ -282,7 +282,7 @@ const Register = () => {
             }}
             disabled={!region}
           >
-            <option value="">Select your place</option>
+            <option value="">Select your province/city</option>
             {places.map((p) => (
               <option key={p} value={p}>{p}</option>
             ))}
