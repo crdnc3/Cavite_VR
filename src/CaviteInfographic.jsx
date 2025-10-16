@@ -638,13 +638,13 @@ const CaviteInfographic = ({ searchTerm }) => {
                 
                 <div className="cavite-feedback-modal-buttons">
                   <button 
-                    className="cavite-submit-feedback-button" 
+                    className="feedback-cavite-submit-feedback-button" 
                     onClick={handleSubmitFeedback}
                   >
                     Submit Feedback
                   </button>
                   <button 
-                    className="cavite-cancel-feedback-button" 
+                    className="feedback-cavite-cancel-feedback-button" 
                     onClick={toggleFeedbackBox}
                   >
                     Cancel
