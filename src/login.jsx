@@ -102,7 +102,7 @@ const Login = () => {
       <img src={newestlogo} alt="Logo" className="logo-image" />
 
       <div className="login-card">
-        <h1 className="login-title">Welcome</h1>
+        <h1 className="login-title">Welcome!</h1>
         <p className="login-bio">Sign in to your account</p>
 
         {/* Email input */}

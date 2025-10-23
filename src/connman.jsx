@@ -355,7 +355,6 @@ const ContentManager = () => {
                   type="text"
                   placeholder="Paste image URL and press Enter"
                   value={imageInput}
-                  required
                   onChange={(e) => setImageInput(e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
