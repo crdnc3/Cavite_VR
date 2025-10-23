@@ -135,8 +135,7 @@ const About = () => {
               <span className="bottom-star">★</span>
             </div>
             <p>
-              Dynamic VR experiences that transport users to the past, making
-              history engaging and memorable unlike traditional static exhibits.
+            Immersive VR tours that let users explore realistic 3D models of Cavite’s historical landmarks, offering a modern and engaging way to experience history.
             </p>
           </div>
         </div>
@@ -219,7 +218,7 @@ const About = () => {
 
             <div className="team-layout">
             <a
-                href="https://www.facebook.com/alister.realo"
+                href="https://www.linkedin.com/in/dylan-realo-02b271390/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="team-member"
@@ -228,7 +227,7 @@ const About = () => {
                 <div className="member-info">
                 <h4>Alister Dylan Emmanuel M. Realo</h4>
                 <p className="member-role">
-                    Project Manager, Full Stack Web Developer
+                    Project Manager & Full Stack Web Developer
                 </p>
                 <p className="member-specialty">
                     Leads the team with strong project management skills, ensuring
@@ -249,7 +248,7 @@ const About = () => {
                 <div className="member-info">
                 <h4>Marvin Humprey Ulysses P. Atienza</h4>
                 <p className="member-role">
-                    Front-End Developer (VR App) & 3D Modeler
+                    VR Developer & 3D Modeler
                 </p>
                 <p className="member-specialty">
                     Crafts the Cavite VR app's front-end with precision, designing an
@@ -270,7 +269,7 @@ const About = () => {
                 <div className="member-info">
                 <h4>Raemil Vince A. Amarillo</h4>
                 <p className="member-role">
-                    Researcher & Back-End Developer (VR App)
+                    System Analyst & Back-End Developer (VR App)
                 </p>
                 <p className="member-specialty">
                     Drives the foundation of the project through comprehensive thesis

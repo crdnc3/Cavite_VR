@@ -59,7 +59,7 @@ const LandingPage = () => {
                         className="download-apk-button"
                         onClick={() => {
                             window.open(
-                            "https://github.com/Marvin-Atienza/CaviteVR/releases/download/v0.1.8/CaviteVR_v0.1.8.apk",
+                            "https://github.com/Marvin-Atienza/CaviteVR/releases/download/v0.1.9/CaviterVR_v0.2.0.apk",
                             "_blank"
                             );
                         }}
